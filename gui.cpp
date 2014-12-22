@@ -5,6 +5,11 @@ Gui::Gui(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Gui)
 {
+
+
+
+
+
     ui->setupUi(this);
 }
 
