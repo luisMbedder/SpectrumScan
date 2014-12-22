@@ -13,6 +13,7 @@
 #ifndef SPECTROGRAPH_H
 #define SPECTROGRAPH_H
 
+#include <stdint.h>
 #include <QObject>
 #include <qwt_plot.h>
 #include <stdint.h>
@@ -25,6 +26,7 @@
 #include <qwt_plot_directpainter.h>
 #include <qwt_curve_fitter.h>
 #include <qwt_painter.h>
+#include "Sdrcapture.h"
 
 
 class Spectrograph : public QwtPlot
@@ -63,7 +65,7 @@ public slots:
 private:
     QwtPlotDirectPainter *d_directPainter;
     QwtPlotCurve *d_curve;
-   // double d_x[RESULT_LENGTH];
+    double d_x[RESULT_LENGTH];
 
 };
 
