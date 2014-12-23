@@ -30,9 +30,17 @@ Spectrograph::Spectrograph(QWidget *parent):
     setAxisTitle( QwtPlot::yLeft, "Amplitude (dB)" );
     setAxisScale( QwtPlot::xBottom, 0, RESULT_LENGTH );
     setAxisScale( QwtPlot::yLeft, -90, -10);
+    //setAutoFillBackground(true);
+   // setCanvasBackground(QColor(29,100,141)); //blue color
+    setCanvasBackground(QColor(0,0,0));
+   // QwtScaleWidget *qwtsw = myqwtplot.axisWidget(QwtPlot::xBottom);
+   // QPalette palette = this->palette();
+  //  palette.setColor( QPalette::WindowText, Qt::yellow); // for ticks
+  //  palette.setColor( QPalette::Text, Qt::yellow); // for ticks' labels
+  //  this->setPalette( palette );
 
     QwtPlotGrid *grid = new QwtPlotGrid();
-    grid->setPen( Qt::gray, 0.0, Qt::DotLine );
+    grid->setPen( Qt::white, 0.0, Qt::DotLine );
     grid->enableX( true );
     grid->enableXMin( true );
     grid->enableY( true );
@@ -42,7 +50,7 @@ Spectrograph::Spectrograph(QWidget *parent):
 
     d_curve = new QwtPlotCurve();
     d_curve->setStyle( QwtPlotCurve::Lines );
-    d_curve->setPen(Qt::darkGray);
+    d_curve->setPen(Qt::yellow);
     //d_curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
     d_curve->setPaintAttribute( QwtPlotCurve::ClipPolygons, false );
     d_curve->attach( this );
