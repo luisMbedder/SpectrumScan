@@ -5,6 +5,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <qwt_plot.h>
+#include <qwt_scale_widget.h>
 #include "Sdrcapture.h"
 
 #include "math.h"
@@ -25,6 +26,18 @@ Gui::Gui(QWidget *parent) :
 
     plot = new Spectrograph(this);
     plot->setGeometry(10, 10, 780, 330);
+
+     QwtScaleWidget *bottomScale =plot->axisWidget(QwtPlot::xBottom);
+     QPalette bottomPalette = bottomScale->palette();
+     bottomPalette.setColor( QPalette::WindowText, Qt::white); // for ticks
+    bottomPalette.setColor( QPalette::Text, Qt::white); //for ticks labels
+    bottomScale->setPalette( bottomPalette );
+
+    QwtScaleWidget *leftScale = plot->axisWidget(QwtPlot::yLeft);
+    QPalette leftPalette = leftScale->palette();
+    leftPalette.setColor( QPalette::WindowText, Qt::white); // for ticks
+   leftPalette.setColor( QPalette::Text, Qt::white); // for ticks labels
+   leftScale->setPalette( leftPalette );
 
     ui->setupUi(this);
     /*ui->tabWidget->setCurrentIndex(0);

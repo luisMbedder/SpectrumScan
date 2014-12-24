@@ -15,7 +15,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">#Gui{
-background:rgb(29,100,141)
+background:rgb(0,0,0)
 
 }</string>
   </property>
@@ -23,9 +23,9 @@ background:rgb(29,100,141)
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>350</y>
+     <y>340</y>
      <width>801</width>
-     <height>131</height>
+     <height>141</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -33,22 +33,28 @@ background:rgb(29,100,141)
    </property>
    <property name="styleSheet">
     <string notr="true">#frame{
-background:rgb(143, 143, 138)
+background:rgb(208, 211, 217)
 
 
 }</string>
    </property>
    <property name="frameShape">
-    <enum>QFrame::StyledPanel</enum>
+    <enum>QFrame::Box</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
+    <enum>QFrame::Sunken</enum>
+   </property>
+   <property name="lineWidth">
+    <number>3</number>
+   </property>
+   <property name="midLineWidth">
+    <number>0</number>
    </property>
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>0</y>
+      <y>10</y>
       <width>371</width>
       <height>121</height>
      </rect>
@@ -64,12 +70,28 @@ background:rgb(143, 143, 138)
      <bool>false</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">QGroupBox{
-color: rgb(255, 255, 255)
-}</string>
+     <string notr="true"> QGroupBox {
+     background-color:rgb(93, 110, 118);
+     border-radius: 5px;
+border: 2px solid gray;
+ 
+     margin-top: 1ex; /* leave space at the top for the title */
+ }
+
+ QGroupBox::title {
+     subcontrol-origin: margin;
+     subcontrol-position: top left; /* position at the top center */
+     padding: 0 5px;
+     background-color: rgb(93, 110, 118);
+ border-radius: 5px;
+color: white;
+ }</string>
     </property>
     <property name="title">
      <string>Frequency</string>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
     </property>
     <widget class="QPushButton" name="pushButton">
      <property name="geometry">
@@ -80,8 +102,17 @@ color: rgb(255, 255, 255)
        <height>41</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="text">
       <string>+100 MHz</string>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButton_2">
@@ -92,6 +123,12 @@ color: rgb(255, 255, 255)
        <width>81</width>
        <height>41</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
      </property>
      <property name="text">
       <string>-100 MHz</string>
@@ -106,6 +143,12 @@ color: rgb(255, 255, 255)
        <height>41</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="text">
       <string>+10 MHz</string>
      </property>
@@ -118,6 +161,12 @@ color: rgb(255, 255, 255)
        <width>81</width>
        <height>41</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
      </property>
      <property name="text">
       <string>-10 MHz</string>
@@ -132,6 +181,12 @@ color: rgb(255, 255, 255)
        <height>41</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="text">
       <string>+1 MHz</string>
      </property>
@@ -144,6 +199,12 @@ color: rgb(255, 255, 255)
        <width>81</width>
        <height>41</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
      </property>
      <property name="text">
       <string>-1 MHz</string>
@@ -158,6 +219,12 @@ color: rgb(255, 255, 255)
        <height>41</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="text">
       <string>+0.1 MHz</string>
      </property>
@@ -171,6 +238,12 @@ color: rgb(255, 255, 255)
        <height>41</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="text">
       <string>-0.1 MHz</string>
      </property>
@@ -179,22 +252,154 @@ color: rgb(255, 255, 255)
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>440</x>
+      <x>400</x>
       <y>10</y>
-      <width>161</width>
-      <height>101</height>
+      <width>291</width>
+      <height>121</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QGroupBox {
+     background-color:rgb(93, 110, 118);
+     border-radius: 5px;
+border: 2px solid gray;
+ 
+     margin-top: 1ex; /* leave space at the top for the title */
+ }
+
+ QGroupBox::title {
+     subcontrol-origin: margin;
+     subcontrol-position: top left; /* position at the top center */
+     padding: 0 5px;
+     background-color: rgb(93, 110, 118);
+ border-radius: 5px;
+color: white;
+ }</string>
     </property>
     <property name="title">
      <string>Gain</string>
     </property>
+    <widget class="QSlider" name="horizontalSlider">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>50</y>
+       <width>160</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_11">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>51</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>15</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_12">
+     <property name="geometry">
+      <rect>
+       <x>230</x>
+       <y>50</y>
+       <width>51</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>15</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>+</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QPushButton" name="pushButton_9">
     <property name="geometry">
      <rect>
-      <x>650</x>
+      <x>710</x>
+      <y>20</y>
+      <width>81</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Mode</string>
+    </property>
+   </widget>
+   <widget class="Line" name="line">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
       <y>10</y>
-      <width>101</width>
+      <width>20</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(122, 126, 131)</string>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>2</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line_2">
+    <property name="geometry">
+     <rect>
+      <x>690</x>
+      <y>10</y>
+      <width>16</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(122, 126, 131)</string>
+    </property>
+    <property name="lineWidth">
+     <number>2</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_10">
+    <property name="geometry">
+     <rect>
+      <x>710</x>
+      <y>70</y>
+      <width>81</width>
       <height>41</height>
      </rect>
     </property>

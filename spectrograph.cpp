@@ -50,7 +50,7 @@ Spectrograph::Spectrograph(QWidget *parent):
 
     d_curve = new QwtPlotCurve();
     d_curve->setStyle( QwtPlotCurve::Lines );
-    d_curve->setPen(Qt::yellow);
+    d_curve->setPen(Qt::green);//Qt::yellow);
     //d_curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
     d_curve->setPaintAttribute( QwtPlotCurve::ClipPolygons, false );
     d_curve->attach( this );
