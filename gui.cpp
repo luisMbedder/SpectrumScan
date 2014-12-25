@@ -84,16 +84,16 @@ Gui::Gui(QWidget *parent) :
 
     sdrCapture = new Sdrcapture();
     if(sdrCapture->isE4000()){
-  //      ui->checkBox_offsettuning->setEnabled(true);
-  //      ui->checkBox_offsettuning->setVisible(true);
+        //ui->checkBox_offsettuning->setEnabled(true);
+        //ui->checkBox_offsettuning->setVisible(true);
     }
     else{
-  //      ui->checkBox_offsettuning->setEnabled(false);
-   //     ui->checkBox_offsettuning->setVisible(false);
+        //ui->checkBox_offsettuning->setEnabled(false);
+        //ui->checkBox_offsettuning->setVisible(false);
     }
     num_gains = sdrCapture->get_num_gains();
-    //ui->horizontalSlider->setMaximum(num_gains-1);
-    sdrThread = new QThread();//dont step into
+    ui->gainSlider->setMaximum(num_gains-1);
+    sdrThread = new QThread();
     sdrCapture->moveToThread(sdrThread);
 
     // Connects slots
@@ -201,10 +201,10 @@ void Gui::doneCapture()
     //Display overflow - gain too high warning
     if(overflow != overflow_warning_displayed){
         if(overflow){
-           // ui->label_gainhigh->setVisible(true);
+            ui->label_gainhigh->setVisible(true);
         }
         else{
-          //  ui->label_gainhigh->setVisible(false);
+            ui->label_gainhigh->setVisible(false);
         }
         overflow_warning_displayed = overflow;
     }
@@ -259,8 +259,8 @@ void Gui::doneCapture()
     }
 
     //Change frequency if +0.1MHz or -0.1MHz button is pressed
-    //if(ui->pushButton_Inc01->isDown()) update_target_frequency(100000);
-  //  if(ui->pushButton_Dec01->isDown()) update_target_frequency(-100000);
+    if(ui->pushButton_Inc01->isDown()) update_target_frequency(100000);
+    if(ui->pushButton_Dec01->isDown()) update_target_frequency(-100000);
 
     emit startCapture();
 }
@@ -274,7 +274,7 @@ void Gui::set_target_frequency(u_int32_t frequency)
     target_frequency = frequency;
     QString text;
     text.sprintf("Target: %4.1f MHz", target_frequency/1000000.);
-    //ui->label_targetfrequency->setText(text);
+  //  ui->label_targetfrequency->setText(text);
     emit setRtlFrequency(frequency);
 }
 
@@ -296,7 +296,7 @@ void Gui::set_target_gain(unsigned gain_index)
 {
     target_gain = gain_index;
     if(target_gain>num_gains-1) target_gain = num_gains-1;
-    //ui->horizontalSlider->setValue(target_gain);
+    ui->gainSlider->setValue(target_gain);
     emit setRtlGain(target_gain);
 }
 
