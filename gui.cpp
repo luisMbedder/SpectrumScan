@@ -211,17 +211,23 @@ void Gui::doneCapture()
 
     //Update graph display range and title if frequency changes
     QString title;
+    QwtText title2;
     if(sdrCapture->is_locked){
          if(display_locked_frequency!= sdrCapture->locked_frequency){
              double freq_MHz = sdrCapture->locked_frequency/1000000.0;
              title.sprintf("Center %4.1f MHz", freq_MHz);
-             plot->setTitle(title);
+             title2=(QwtText)title;
+             title2.setColor(Qt::white);
+             plot->setTitle(title2);
              plot->SetXRange(freq_MHz-1.2, freq_MHz+1.2);
              display_locked_frequency = sdrCapture->locked_frequency;
          }
     }
     else{
         title.sprintf("Frequency Not Locked [%4.1f MHz]", target_frequency/1000000.);
+        title2=(QwtText)title;
+        title2.setColor(Qt::white);
+        plot->setTitle(title2);
         plot->setTitle(title);
     }
 
