@@ -41,8 +41,6 @@ private slots:
     void on_pushButton_Capture_clicked();
     void on_pushButton_Exit_clicked();
 
-    void on_pushButton_9_clicked();
-
 private:
     Ui::Gui *ui;
 

@@ -40,6 +40,7 @@ Gui::Gui(QWidget *parent) :
    leftScale->setPalette( leftPalette );
 
     ui->setupUi(this);
+    ui->label_gainhigh->setVisible(false);
     /*ui->tabWidget->setCurrentIndex(0);
     ui->label_gainhigh->setVisible(false);
     ui->label_targetfrequency->setVisible(false);
@@ -52,7 +53,7 @@ Gui::Gui(QWidget *parent) :
 #endif
 
 #ifdef USE_AVFFT
-    fft_context = av_fft_init(FFT_LENGTH_2N,0);
+    fft_context = av_fft_init(FFT_LENGTH_2N,0);//set up a complex FFT
     fft_data = (FFTComplex*) av_malloc(FFT_LENGTH * sizeof(FFTComplex));
 #endif
 
@@ -97,12 +98,11 @@ Gui::Gui(QWidget *parent) :
     sdrCapture->moveToThread(sdrThread);
 
     // Connects slots
-    sdrCapture->connect(this, SIGNAL(startCapture()), SLOT(threadFunction()));
+    sdrCapture->connect(this, SIGNAL(startCapture()),SLOT(threadFunction()));
     this->connect(sdrCapture, SIGNAL(packetCaptured()), SLOT(doneCapture()));
     sdrCapture->connect(this, SIGNAL(setRtlFrequency(unsigned)), SLOT(set_frequency(unsigned)));
     sdrCapture->connect(this, SIGNAL(setRtlGain(unsigned)), SLOT(set_gain(unsigned)));
     sdrCapture->connect(this, SIGNAL(setRtlOffsetTuning(bool)), SLOT(set_offset_tuning(bool)));
-
     sdr_buffer = sdrCapture->getBuffer();
     sdrThread->start();
     set_target_frequency(DEFAULT_CENTER_FREQUENCY);
@@ -120,9 +120,12 @@ Gui::~Gui()
 }
 
 /*****************************************************************************
- * Function is called after a block of IQ data has been captured.
- * Calculates PSD
- * retriggers the collection of another block of IQ data
+ * This method is called after a block of IQ data has been captured
+ * The Power Spectral Density(PSD) is calculated using a 50% overlap to
+ * to compensate for the attenuation at the ends of the frames
+ * caused by applying the window function.
+ * The collection of another block of IQ data is triggered at the end of
+ * the method.
  ****************************************************************************/
 void Gui::doneCapture()
 {
@@ -132,7 +135,7 @@ void Gui::doneCapture()
     //ui->label_counter->setText(text);
 
     uint8_t re,im;
-    float ref, imf;
+    float f_re, f_im;
     float ptr, pti;
     bool overflow = false;
 
@@ -157,11 +160,12 @@ void Gui::doneCapture()
     int slide_length = 0;
     for(j=0; j< FFT_NUM_BLOCKS; ++j){
         for (i = 0; i < FFT_LENGTH; i++) {
-            ref = sdr_buffer[slide_length+2*i] - dc_i_average;
-            imf = sdr_buffer[slide_length+2*i+1] - dc_q_average;
-
-            ptr = (ref) * (1.0f + gain_correction)* window[i];
-            pti = (imf + ref*phase_correction) * window[i];
+            //remove the dC average from the signal before applying the FFT
+            f_re = sdr_buffer[slide_length+2*i] - dc_i_average;
+            f_im = sdr_buffer[slide_length+2*i+1] - dc_q_average;
+            //apply hamming window
+            ptr = (f_re) * (1.0f + gain_correction)* window[i];
+            pti = (f_im + f_re*phase_correction) * window[i];
 
 #ifdef USE_AVFFT
             fft_data[i].re = ptr;
@@ -174,6 +178,7 @@ void Gui::doneCapture()
         }
 
 #ifdef USE_AVFFT
+        //calculate FFT
         av_fft_permute(fft_context, fft_data);
         av_fft_calc(fft_context, fft_data);
 #endif
@@ -183,6 +188,7 @@ void Gui::doneCapture()
 
         for (i = 0; i < FFT_LENGTH; i++) {
 #ifdef USE_AVFFT
+            //calculate power spectrun => [sqrt(re^2+im^2)]^2
             data_result[i] += fft_data[i].re*fft_data[i].re+fft_data[i].im*fft_data[i].im;
 #endif
 #ifdef USE_KISSFFT
@@ -219,6 +225,7 @@ void Gui::doneCapture()
              title2=(QwtText)title;
              title2.setColor(Qt::white);
              plot->setTitle(title2);
+             //bandwidth is 2.5MHz so +-(2.5MHz/2) to center freq_MHz
              plot->SetXRange(freq_MHz-1.2, freq_MHz+1.2);
              display_locked_frequency = sdrCapture->locked_frequency;
          }
@@ -259,8 +266,12 @@ void Gui::doneCapture()
     }
 
     //Change frequency if +0.1MHz or -0.1MHz button is pressed
-    if(ui->pushButton_Inc01->isDown()) update_target_frequency(100000);
-    if(ui->pushButton_Dec01->isDown()) update_target_frequency(-100000);
+    if(ui->pushButton_Inc01->isDown()){
+        update_target_frequency(100000);
+    }
+    if(ui->pushButton_Dec01->isDown()){
+        update_target_frequency(-100000);
+    }
 
     emit startCapture();
 }
@@ -274,7 +285,6 @@ void Gui::set_target_frequency(u_int32_t frequency)
     target_frequency = frequency;
     QString text;
     text.sprintf("Target: %4.1f MHz", target_frequency/1000000.);
-  //  ui->label_targetfrequency->setText(text);
     emit setRtlFrequency(frequency);
 }
 
@@ -295,7 +305,9 @@ void Gui::update_target_frequency(int32_t delta)
 void Gui::set_target_gain(unsigned gain_index)
 {
     target_gain = gain_index;
-    if(target_gain>num_gains-1) target_gain = num_gains-1;
+    if(target_gain>num_gains-1){
+        target_gain = num_gains-1;
+    }
     ui->gainSlider->setValue(target_gain);
     emit setRtlGain(target_gain);
 }
@@ -383,8 +395,3 @@ void Gui::on_pushButton_Exit_clicked()
 }
 
 // End of Gui.cpp
-
-void Gui::on_pushButton_9_clicked()
-{
-  this->close();
-}

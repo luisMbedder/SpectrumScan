@@ -111,6 +111,9 @@ color: white;
      <property name="text">
       <string>+100 MHz</string>
      </property>
+     <property name="autoRepeat">
+      <bool>true</bool>
+     </property>
      <property name="flat">
       <bool>false</bool>
      </property>
@@ -133,6 +136,9 @@ color: white;
      <property name="text">
       <string>-100 MHz</string>
      </property>
+     <property name="autoRepeat">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="QPushButton" name="pushButton_Inc10">
      <property name="geometry">
@@ -151,6 +157,9 @@ color: white;
      </property>
      <property name="text">
       <string>+10 MHz</string>
+     </property>
+     <property name="autoRepeat">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButton_Dec10">
@@ -171,6 +180,9 @@ color: white;
      <property name="text">
       <string>-10 MHz</string>
      </property>
+     <property name="autoRepeat">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="QPushButton" name="pushButton_Inc1">
      <property name="geometry">
@@ -189,6 +201,9 @@ color: white;
      </property>
      <property name="text">
       <string>+1 MHz</string>
+     </property>
+     <property name="autoRepeat">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButton_Dec1">
@@ -209,6 +224,9 @@ color: white;
      <property name="text">
       <string>-1 MHz</string>
      </property>
+     <property name="autoRepeat">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="QPushButton" name="pushButton_Inc01">
      <property name="geometry">
@@ -228,6 +246,9 @@ color: white;
      <property name="text">
       <string>+0.1 MHz</string>
      </property>
+     <property name="autoRepeat">
+      <bool>false</bool>
+     </property>
     </widget>
     <widget class="QPushButton" name="pushButton_Dec01">
      <property name="geometry">
@@ -246,6 +267,9 @@ color: white;
      </property>
      <property name="text">
       <string>-0.1 MHz</string>
+     </property>
+     <property name="autoRepeat">
+      <bool>false</bool>
      </property>
     </widget>
    </widget>

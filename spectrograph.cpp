@@ -3,9 +3,8 @@
 *
 * File: Spectrograph.cpp
 *
-* Description: This file defines the spectrogrpah class
-*              to display the RF spectrum
-*
+* Description: This class creates the plot where the
+*              RF spectrum will be displayed in real time.
 *
 * notes:
 ********************************************************************/
@@ -24,40 +23,34 @@ Spectrograph::Spectrograph(QWidget *parent):
     setCanvas( new QwtPlotCanvas() );
 
     plotLayout()->setAlignCanvasToScales( true );
-
-    setTitle("SpectrumScan - LuisMbedder");
-
+    //set plot title and range
     setAxisTitle( QwtPlot::xBottom, "Frequency (MHz)" );
     setAxisTitle( QwtPlot::yLeft, "Amplitude (dB)" );
     setAxisScale( QwtPlot::xBottom, 0, RESULT_LENGTH );
     setAxisScale( QwtPlot::yLeft, -90, -10);
-    //setAutoFillBackground(true);
-   // setCanvasBackground(QColor(29,100,141)); //blue color
-    setCanvasBackground(QColor(0,0,0));
-   // QwtScaleWidget *qwtsw = myqwtplot.axisWidget(QwtPlot::xBottom);
-   // QPalette palette = this->palette();
-  //  palette.setColor( QPalette::WindowText, Qt::yellow); // for ticks
-  //  palette.setColor( QPalette::Text, Qt::yellow); // for ticks' labels
-  //  this->setPalette( palette );
 
+    //black background
+    setCanvasBackground(QColor(0,0,0));
+
+    //add grid
     QwtPlotGrid *grid = new QwtPlotGrid();
     grid->setPen( Qt::white, 0.0, Qt::DotLine );
     grid->enableX( true );
     grid->enableXMin( true );
     grid->enableY( true );
     grid->enableYMin( false );
-    grid->attach( this );
+    grid->attach( this );//attach grid to plot
 
-
+    //add curve
     d_curve = new QwtPlotCurve();
     d_curve->setStyle( QwtPlotCurve::Lines );
-    d_curve->setPen(Qt::yellow);//Qt::yellow);
-    //d_curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    d_curve->setPen(Qt::yellow);
     d_curve->setPaintAttribute( QwtPlotCurve::ClipPolygons, false );
-    d_curve->attach( this );
+    d_curve->attach( this );//attach curve to plot
 
-    //for(int i=0; i<RESULT_LENGTH; ++i) d_x[i] = i;
-
+    for(int i=0; i<RESULT_LENGTH; ++i) {
+        d_x[i] = i;
+    }
 
 }
 
