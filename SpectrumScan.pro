@@ -20,12 +20,14 @@ TEMPLATE = app
 SOURCES += main.cpp\
     gui.cpp \
     spectrograph.cpp \
-    Sdrcapture.cpp
+    Sdrcapture.cpp \
+    waterfallplot.cpp
 
 HEADERS  += \
     gui.h \
     spectrograph.h \
-    Sdrcapture.h
+    Sdrcapture.h \
+    waterfallplot.h
 
 FORMS    += \
     gui.ui
