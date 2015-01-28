@@ -21,13 +21,17 @@ SOURCES += main.cpp\
     gui.cpp \
     spectrograph.cpp \
     Sdrcapture.cpp \
-    waterfallplot.cpp
+    waterfallplot.cpp \
+    qwt_double_rect.cpp \
+    qwt_double_interval.cpp
 
 HEADERS  += \
     gui.h \
     spectrograph.h \
     Sdrcapture.h \
-    waterfallplot.h
+    waterfallplot.h \
+    qwt_double_rect.h \
+    qwt_double_interval.h
 
 FORMS    += \
     gui.ui

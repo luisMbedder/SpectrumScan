@@ -17,14 +17,19 @@
 #include <QApplication>
 #include <QWSServer>
 #include "gui.h"
+#include "waterfallplot.h"
 //#include <QtGui>
 
 int main(int argc, char *argv[])
 {
     QApplication prog(argc, argv);
-    Gui gui;
-    gui.setWindowState(Qt::WindowFullScreen);
-    gui.show();
+    //Gui gui;
+    Waterfallplot waterfall;
+    waterfall.setWindowState(Qt::WindowFullScreen);
+    waterfall.showWaterfall(true);
+   //  setCentralWidget(waterfall);
+   //gui.setWindowState(Qt::WindowFullScreen);
+   // gui.show();
 
     return prog.exec();
 }
