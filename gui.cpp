@@ -1,7 +1,7 @@
 #include "gui.h"
 #include "ui_gui.h"
 #include "spectrograph.h"
-
+#include "waterfallplot.h"
 #include <QtCore>
 #include <QtGui>
 #include <qwt_plot.h>
@@ -23,7 +23,8 @@ Gui::Gui(QWidget *parent) :
 
     overflow_warning_displayed = false;
     save_next = false;
-
+    mode = SPECTROGRAPH;
+   //create spectrograph plot, default graph
     plot = new Spectrograph(this);
     plot->setGeometry(10, 10, 780, 330);
 
@@ -38,6 +39,11 @@ Gui::Gui(QWidget *parent) :
     leftPalette.setColor( QPalette::WindowText, Qt::white); // for ticks
    leftPalette.setColor( QPalette::Text, Qt::white); // for ticks labels
    leftScale->setPalette( leftPalette );
+
+ //create waterfall plot, hidden by default
+   waterfall = new Waterfallplot(this);
+   waterfall->setGeometry(10,10,780,330);
+   waterfall->hide();
 
     ui->setupUi(this);
     ui->label_gainhigh->setVisible(false);
@@ -392,6 +398,24 @@ void Gui::on_pushButton_Capture_clicked()
 void Gui::on_pushButton_Exit_clicked()
 {
     this->close();
+}
+
+void Gui::on_pushButton_Mode_clicked()
+{
+
+
+  if(mode==SPECTROGRAPH){
+        mode=WATERFALL;
+        plot->hide();
+        waterfall->show();
+    }
+    else{
+
+        mode=SPECTROGRAPH;
+        waterfall->hide();
+        plot->show();
+    }
+
 }
 
 // End of Gui.cpp

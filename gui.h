@@ -4,6 +4,7 @@
 #include <QDialog>
 #include "spectrograph.h"
 #include "Sdrcapture.h"
+#include "waterfallplot.h"
 
 #ifdef USE_AVFFT
 extern "C" {
@@ -41,6 +42,8 @@ private slots:
     void on_pushButton_Capture_clicked();
     void on_pushButton_Exit_clicked();
 
+    void on_pushButton_Mode_clicked();
+
 private:
     Ui::Gui *ui;
 
@@ -49,6 +52,7 @@ private:
     Sdrcapture *sdrCapture;
     QThread *sdrThread;
     Spectrograph *plot;
+    Waterfallplot *waterfall;
     uint8_t* sdr_buffer;
     int count;
 
@@ -70,6 +74,13 @@ private:
     bool overflow_warning_displayed;
 
     bool save_next;
+    enum GRAPH_MODE_T
+    {
+       SPECTROGRAPH,
+       WATERFALL
+    };
+
+    GRAPH_MODE_T mode;
 
     float dc_i_average;
     float dc_q_average;

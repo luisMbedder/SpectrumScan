@@ -23,13 +23,14 @@
 int main(int argc, char *argv[])
 {
     QApplication prog(argc, argv);
-    //Gui gui;
-    Waterfallplot waterfall;
+   Gui gui;
+  /*  Waterfallplot waterfall;
     waterfall.setWindowState(Qt::WindowFullScreen);
-    waterfall.showWaterfall(true);
+    waterfall.showWaterfall(true);*/
+
    //  setCentralWidget(waterfall);
-   //gui.setWindowState(Qt::WindowFullScreen);
-   // gui.show();
+   gui.setWindowState(Qt::WindowFullScreen);
+  gui.show();
 
     return prog.exec();
 }
