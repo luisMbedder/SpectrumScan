@@ -7,7 +7,7 @@
 #include <qwt_plot.h>
 #include <qwt_scale_widget.h>
 #include "Sdrcapture.h"
-
+#include <QVector>
 #include "math.h"
 
 
@@ -245,6 +245,24 @@ void Gui::doneCapture()
     }
 
     plot->SetData(data_result);
+
+    std::vector<double> rasterData;
+    QVector<double> rasterVector(1024);
+    int size = sizeof(data_result)/sizeof(*data_result);
+    rasterData.assign(data_result,data_result+sizeof(data_result)/sizeof(*data_result));
+
+ //   for(int i=0;i<5;i++){
+
+//        rasterVector.push_back(i+1);
+ //   }
+//    qDebug()<<rasterVector.first();
+   // rasterVector.fromStdVector(rasterData);
+    qCopy(data_result,data_result+size,rasterVector.begin());
+    qDebug()<<rasterVector.first();
+    qDebug()<<rasterVector.last();
+   // qCopy(data_result,data_result+size,rasterVector.begin());
+
+    waterfall->SetWaterfallData(rasterVector);
 
     //Save IQ and FFT block if requested
     if(save_next){

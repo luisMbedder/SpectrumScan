@@ -9,6 +9,7 @@
 #include <qwt_plot_panner.h>
 #include <qwt_plot_layout.h>
 #include <qwt_plot_renderer.h>
+#include <qwt_matrix_raster_data.h>
 #include "waterfallplot.h"
 
 class MyZoomer: public QwtPlotZoomer
@@ -31,28 +32,53 @@ public:
     }
 };
 
-class SpectrogramData: public QwtRasterData
+class SpectrogramData: public QwtMatrixRasterData//public QwtRasterData
 {
 public:
-    SpectrogramData()
+    SpectrogramData(QVector<double> data)
+   // SpectrogramData()
     {
+       //  this->
+      //  int columns = QwtMatrixRasterData::numColumns();
+        //int row = this->numRows();
+       // QVector<double> matrix = valueMatrix();
         setInterval( Qt::XAxis, QwtInterval( -1.5, 1.5 ) );
         setInterval( Qt::YAxis, QwtInterval( -1.5, 1.5 ) );
         setInterval( Qt::ZAxis, QwtInterval( 0.0, 10.0 ) );
+
+
+         setValueMatrix(data,1024);
+        int columns = numColumns();
+        int row = this->numRows();
+         QVector<double> matrix = valueMatrix();
+
     }
 
     virtual double value( double x, double y ) const
     {
-        const double c = 0.842;
-        //const double c = 0.33;
-
+        //const double c = 0.842;
+        const double c = 0.33;
+        if(x>1.48){
+            int a =0;
+        }
+        if(y<-1.48){
+            int b =0;
+        }
         const double v1 = x * x + ( y - c ) * ( y + c );
         const double v2 = x * ( y + c ) + x * ( y + c );
 
+        int columns = numColumns();
+        int row = this->numRows();
+        //setValueMatrix(data,1024);
+         QVector<double> matrix = valueMatrix();
+
         return 1.0 / ( v1 * v1 + v2 * v2 );
+
     }
 };
 
+
+//sets the intensity color range
 class LinearColorMapRGB: public QwtLinearColorMap
 {
 public:
@@ -165,22 +191,22 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
         contourLevels += level;
     d_waterfall->setContourLevels( contourLevels );
 
-    d_waterfall->setData( new SpectrogramData() );
+//  d_waterfall->setData( new SpectrogramData() ); commented
     d_waterfall->attach( this );
 
-    const QwtInterval zInterval = d_waterfall->data()->interval( Qt::ZAxis );
+//   const QwtInterval zInterval = d_waterfall->data()->interval( Qt::ZAxis ); commented
 
     // A color bar on the right axis
     QwtScaleWidget *rightAxis = axisWidget( QwtPlot::yRight );
     rightAxis->setTitle( "Intensity" );
     rightAxis->setColorBarEnabled( true );
 
-    setAxisScale( QwtPlot::yRight, zInterval.minValue(), zInterval.maxValue() );
+    //setAxisScale( QwtPlot::yRight, zInterval.minValue(), zInterval.maxValue() ); commented
     enableAxis( QwtPlot::yRight );
 
     plotLayout()->setAlignCanvasToScales( true );
 
-    setColorMap( Waterfallplot::RGBMap );
+   //setColorMap( Waterfallplot::RGBMap ); commented
 
     // LeftButton for the zooming
     // MidButton for the panning
@@ -207,6 +233,14 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
     const QColor c( Qt::darkBlue );
     zoomer->setRubberBandPen( c );
     zoomer->setTrackerPen( c );
+}
+
+void Waterfallplot::SetWaterfallData(QVector<double> rasterVector){
+//SpectrogramData dat = new SpectrogramData();
+   // std::vector<double> rasterData;
+  //  int size = sizeof(data)/sizeof(*data);
+
+    d_waterfall->setData( new SpectrogramData(rasterVector) );
 }
 
 void Waterfallplot::showContour( bool on )

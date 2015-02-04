@@ -19,6 +19,8 @@ public:
 
     explicit Waterfallplot(QWidget *parent = 0);
 
+    void SetWaterfallData(QVector<double> rasterVector);
+
 signals:
 
 public slots:

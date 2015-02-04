@@ -71,10 +71,13 @@ void Spectrograph::SetData(double data[])
          data[RESULT_LENGTH/2 + i] = data[i];
          data[i] = temp;
     }
+    int size = sizeof(data)/sizeof(data[0]);
     d_curve->setSamples(d_x, data, RESULT_LENGTH);
     replot();
 
 }
+
+
 
 void Spectrograph::SetXRange(double xStart, double xStop)
 {

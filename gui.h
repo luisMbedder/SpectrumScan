@@ -82,6 +82,7 @@ private:
 
     GRAPH_MODE_T mode;
 
+
     float dc_i_average;
     float dc_q_average;
 
