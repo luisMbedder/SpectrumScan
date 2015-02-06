@@ -3,6 +3,7 @@
 
 #include <qwt_plot.h>
 #include <qwt_plot_spectrogram.h>
+#include "waterfalldata.h"
 
 class Waterfallplot : public QwtPlot
 {
@@ -22,6 +23,9 @@ public:
     void SetWaterfallData(QVector<double> rasterVector);
     void SetFrequencyRange(double StartFreq,
                         double StopFreq);
+    double GetStartFrequency()const;
+    double GetStopFrequency()const;
+//void  UpdateInterval(double startFreq,double stopFreq);
 
 signals:
 
@@ -39,6 +43,7 @@ private:
     int d_alpha;
     double _startFrequency;
     double _stopFrequency;
+    WaterfallData * waterfallData;
 
 };
 

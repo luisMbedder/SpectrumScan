@@ -11,6 +11,8 @@
 #include <qwt_plot_renderer.h>
 #include <qwt_matrix_raster_data.h>
 #include "waterfallplot.h"
+#include "waterfalldata.h"
+#include "Sdrcapture.h"
 
 class MyZoomer: public QwtPlotZoomer
 {
@@ -42,18 +44,19 @@ public:
       //  int columns = QwtMatrixRasterData::numColumns();
         //int row = this->numRows();
        // QVector<double> matrix = valueMatrix();
+    //   double sf=Waterfallplot->GetStartFrequency();
         setInterval( Qt::XAxis, QwtInterval( 950.75, 953.2 ) );
-        setInterval( Qt::YAxis, QwtInterval( 0, 5 ) );
-        setInterval( Qt::ZAxis, QwtInterval( -90.0, -10.0 ) );
+       setInterval( Qt::YAxis, QwtInterval( 0, 5 ) );
+       setInterval( Qt::ZAxis, QwtInterval( -90.0, -10.0 ) );
 
 
          setValueMatrix(data,1024);
         int columns = numColumns();
         int row = this->numRows();
          QVector<double> matrix = valueMatrix();
-         qDebug()<<matrix.first();
-         qDebug()<<matrix.last();
-         int a=0;
+       //  qDebug()<<matrix.first();
+      //   qDebug()<<matrix.last();
+       //  int a=0;
          //replot();
 
     }
@@ -101,6 +104,7 @@ public:
 };
 
 
+
 void Waterfallplot::SetFrequencyRange(double StartFreq,
                     double StopFreq)
 {
@@ -116,11 +120,27 @@ void Waterfallplot::SetFrequencyRange(double StartFreq,
     _stopFrequency = StopFreq;
 
     setAxisScale( QwtPlot::xBottom, StartFreq, StopFreq );
+
+  //  setInterval( Qt::YAxis, QwtInterval( 0, 5 ) );
+  //  setInterval( Qt::ZAxis, QwtInterval( -90.0, -10.0 ) );
 //replot();
   }
 
 }
 
+
+
+double
+Waterfallplot::GetStartFrequency() const
+{
+  return _startFrequency;
+}
+
+double
+Waterfallplot::GetStopFrequency() const
+{
+  return _stopFrequency;
+}
 
 //sets the intensity color range
 class LinearColorMapRGB: public QwtLinearColorMap
@@ -227,11 +247,16 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
     QwtPlot( parent ),
     d_alpha(255)
 {
+
+    _startFrequency =  DEFAULT_CENTER_FREQUENCY/1000000.0 -1.2;
+    _stopFrequency =  DEFAULT_CENTER_FREQUENCY/1000000.0 +1.2;
+
     d_waterfall = new QwtPlotSpectrogram();
     d_waterfall ->setRenderThreadCount( 0 ); // use system specific thread count
     d_waterfall ->setCachePolicy( QwtPlotRasterItem::PaintCache );
-
-    d_waterfall->setData( new SpectrogramData() ); //commented
+    waterfallData = new WaterfallData(_startFrequency,_stopFrequency);
+    d_waterfall->setData(waterfallData);
+   // d_waterfall->setData( new SpectrogramData() ); //commented
     d_waterfall->attach( this );
 
    const QwtInterval zInterval = d_waterfall->data()->interval( Qt::ZAxis );//commented

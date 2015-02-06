@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     Sdrcapture.cpp \
     waterfallplot.cpp \
     qwt_double_rect.cpp \
-    qwt_double_interval.cpp
+    qwt_double_interval.cpp \
+    waterfalldata.cpp
 
 HEADERS  += \
     gui.h \
@@ -31,7 +32,8 @@ HEADERS  += \
     Sdrcapture.h \
     waterfallplot.h \
     qwt_double_rect.h \
-    qwt_double_interval.h
+    qwt_double_interval.h \
+    waterfalldata.h
 
 FORMS    += \
     gui.ui
