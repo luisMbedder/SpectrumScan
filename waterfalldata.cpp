@@ -14,8 +14,8 @@ WaterfallData::WaterfallData(
            // QVector<double> matrix = valueMatrix();
         //   double sf=Waterfallplot->GetStartFrequency();
             setInterval( Qt::XAxis, QwtInterval( minimumFrequency, maximumFrequency ) );
-            setInterval( Qt::YAxis, QwtInterval( 0, 5 ) );
-            setInterval( Qt::ZAxis, QwtInterval( -90.0, -10.0 ) );
+            setInterval( Qt::YAxis, QwtInterval( 0, 50 ) );
+            setInterval( Qt::ZAxis, QwtInterval( -90.0, -20.0 ) );
 
 
         //     setValueMatrix(fftData,1024);

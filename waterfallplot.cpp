@@ -147,12 +147,13 @@ class LinearColorMapRGB: public QwtLinearColorMap
 {
 public:
     LinearColorMapRGB():
-        QwtLinearColorMap( Qt::darkBlue, Qt::white, QwtColorMap::RGB )
+        QwtLinearColorMap( Qt::darkBlue, Qt::darkRed, QwtColorMap::RGB )
     {
         addColorStop( 0.2, Qt::blue );
-        addColorStop( 0.4, Qt::cyan );
+        addColorStop( 0.3, Qt::cyan );
         addColorStop( 0.6, Qt::yellow );
         addColorStop( 0.8, Qt::red );
+
     }
 };
 
@@ -251,6 +252,14 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
     _startFrequency =  DEFAULT_CENTER_FREQUENCY/1000000.0 -1.2;
     _stopFrequency =  DEFAULT_CENTER_FREQUENCY/1000000.0 +1.2;
 
+    QPalette palette;
+    palette.setColor(canvas()->backgroundRole(), QColor("white"));
+    canvas()->setPalette(palette);
+
+    setAxisTitle(QwtPlot::xBottom, "Frequency (MHz)");
+
+    setAxisTitle(QwtPlot::yLeft, "Time(s)");
+
     d_waterfall = new QwtPlotSpectrogram();
     d_waterfall ->setRenderThreadCount( 0 ); // use system specific thread count
     d_waterfall ->setCachePolicy( QwtPlotRasterItem::PaintCache );
@@ -269,9 +278,9 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
     setAxisScale( QwtPlot::yRight, zInterval.minValue(), zInterval.maxValue() ); //commented
     enableAxis( QwtPlot::yRight );
 
-    setAxisScale(QwtPlot::xBottom,950.75,953.2);
+    setAxisScale(QwtPlot::xBottom,_startFrequency,_stopFrequency);
     setAxisMaxMinor(QwtPlot::xBottom,0);
-    setAxisScale(QwtPlot::yLeft,0,5);
+    setAxisScale(QwtPlot::yLeft,0,50);
     setAxisMaxMinor(QwtPlot::yLeft,0);
 
     plotLayout()->setAlignCanvasToScales( true );

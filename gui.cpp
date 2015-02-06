@@ -231,6 +231,7 @@ void Gui::doneCapture()
              title2=(QwtText)title;
              title2.setColor(Qt::white);
              plot->setTitle(title2);
+             waterfall->setTitle(title2);
              //bandwidth is 2.5MHz so +-(2.5MHz/2) to center freq_MHz
              plot->SetXRange(freq_MHz-1.2, freq_MHz+1.2);
             // if(waterfall->isVisible()){
