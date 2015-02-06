@@ -20,6 +20,8 @@ public:
     explicit Waterfallplot(QWidget *parent = 0);
 
     void SetWaterfallData(QVector<double> rasterVector);
+    void SetFrequencyRange(double StartFreq,
+                        double StopFreq);
 
 signals:
 
@@ -35,6 +37,8 @@ private:
 
     int d_mapType;
     int d_alpha;
+    double _startFrequency;
+    double _stopFrequency;
 
 };
 

@@ -233,6 +233,9 @@ void Gui::doneCapture()
              plot->setTitle(title2);
              //bandwidth is 2.5MHz so +-(2.5MHz/2) to center freq_MHz
              plot->SetXRange(freq_MHz-1.2, freq_MHz+1.2);
+            // if(waterfall->isVisible()){
+             waterfall->SetFrequencyRange(freq_MHz-1.2, freq_MHz+1.2);
+           //  }
              display_locked_frequency = sdrCapture->locked_frequency;
          }
     }
@@ -258,8 +261,8 @@ void Gui::doneCapture()
 //    qDebug()<<rasterVector.first();
    // rasterVector.fromStdVector(rasterData);
     qCopy(data_result,data_result+size,rasterVector.begin());
-    qDebug()<<rasterVector.first();
-    qDebug()<<rasterVector.last();
+  //  qDebug()<<rasterVector.first();
+  //  qDebug()<<rasterVector.last();
    // qCopy(data_result,data_result+size,rasterVector.begin());
 
     waterfall->SetWaterfallData(rasterVector);
