@@ -11,6 +11,8 @@ public:
     void UpdateInterval(double startFreq,double stopFreq);
 
 void addFFTData(double *fftData);
+void ResizeData(double startFreq, double stopFreq);
+
 };
 
 #endif // WATERFALLDATA_H

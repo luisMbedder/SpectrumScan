@@ -25,6 +25,9 @@ public:
                         double StopFreq);
     double GetStartFrequency()const;
     double GetStopFrequency()const;
+    void PlotNewData(double* dataPoints);
+   void Reset();
+
 //void  UpdateInterval(double startFreq,double stopFreq);
 
 signals:

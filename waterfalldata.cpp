@@ -1,4 +1,5 @@
 #include "waterfalldata.h"
+#include "Sdrcapture.h"
 #include <qwt_matrix_raster_data.h>
 
 WaterfallData::WaterfallData(
@@ -34,18 +35,37 @@ void WaterfallData::UpdateInterval(double startFreq,double stopFreq){
 
 }
 
+void WaterfallData::ResizeData(double startFreq,
+                   double stopFreq){
+
+    setInterval(Qt::XAxis, QwtInterval(startFreq, stopFreq));
+
+
+
+}
+
 void WaterfallData::addFFTData(double *fftData){
+    double result[FFT_LENGTH];
+    //double result2[1024];
+/*    for(int i =0;i<1024;i++)
+    {
+        result[i]=*fftData;
+        fftData++;
+    }*/
+    memcpy(&result, fftData,FFT_LENGTH*sizeof(double));
 
     std::vector<double> rasterData;
-    QVector<double> rasterVector(1024);
-    int size = sizeof(fftData)/sizeof(*fftData);
-    rasterData.assign(fftData,fftData+sizeof(fftData)/sizeof(*fftData));
-    qCopy(fftData,fftData+size,rasterVector.begin());
+    QVector<double> rasterVector(FFT_LENGTH);
+    int size = sizeof(result)/sizeof(*result);
+    rasterData.assign(result,result+sizeof(result)/sizeof(*result));
+    qCopy(result,result+size,rasterVector.begin());
 
 
-    setValueMatrix(rasterVector,1024);
+    setValueMatrix(rasterVector,FFT_LENGTH);
    int columns = numColumns();
    int row = this->numRows();
     QVector<double> matrix = valueMatrix();
+   //  qDebug()<<matrix.first();
+    // qDebug()<<matrix.last();
 
 }

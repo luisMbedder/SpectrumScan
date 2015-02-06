@@ -305,6 +305,29 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
     zoomer->setTrackerPen( c );
 }
 
+void Waterfallplot::PlotNewData(double* dataPoints){
+
+  //  d_waterfall->invalidateCache();
+  // d_waterfall->itemChanged();
+
+    waterfallData->addFFTData(dataPoints);
+
+    d_waterfall->invalidateCache();
+   d_waterfall->itemChanged();
+Reset();
+    replot();
+
+}
+
+void Waterfallplot::Reset(){
+    waterfallData->ResizeData(_startFrequency,_stopFrequency);
+  //  waterfallData->Reset();
+
+    setAxisScale(QwtPlot::xBottom, _startFrequency, _stopFrequency);
+
+
+}
+
 void Waterfallplot::SetWaterfallData(QVector<double> rasterVector){
 //SpectrogramData dat = new SpectrogramData();
    // std::vector<double> rasterData;

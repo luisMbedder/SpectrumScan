@@ -265,7 +265,9 @@ void Gui::doneCapture()
   //  qDebug()<<rasterVector.last();
    // qCopy(data_result,data_result+size,rasterVector.begin());
   //  waterfallData = new WaterfallData();
-    waterfall->SetWaterfallData(rasterVector);
+
+  //  waterfall->SetWaterfallData(rasterVector);
+    waterfall->PlotNewData(data_result);//waterfallData->addFFTData(data_result);
 
     //Save IQ and FFT block if requested
     if(save_next){
