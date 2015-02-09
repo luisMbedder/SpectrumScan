@@ -3,6 +3,8 @@
 #include<qwt_raster_data.h>
 #include<qwt_matrix_raster_data.h>
 
+
+
 class WaterfallData: public QwtMatrixRasterData
 {
 public:

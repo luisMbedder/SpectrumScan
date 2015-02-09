@@ -4,6 +4,9 @@
 #include <qwt_plot.h>
 #include <qwt_plot_spectrogram.h>
 #include "waterfalldata.h"
+//#include "cpustat.h"
+
+#define HISTORY 60 // seconds
 
 class Waterfallplot : public QwtPlot
 {
@@ -26,6 +29,7 @@ public:
     double GetStartFrequency()const;
     double GetStopFrequency()const;
     void PlotNewData(double* dataPoints);
+    QTime upTime();
    void Reset();
 
 //void  UpdateInterval(double startFreq,double stopFreq);
@@ -46,6 +50,7 @@ private:
     int d_alpha;
     double _startFrequency;
     double _stopFrequency;
+//    CpuStat cpuStat;
     WaterfallData * waterfallData;
 
 };

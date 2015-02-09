@@ -1,7 +1,7 @@
 #include "waterfalldata.h"
 #include "Sdrcapture.h"
 #include <qwt_matrix_raster_data.h>
-
+#include "waterfallplot.h"
 WaterfallData::WaterfallData(
                               double minimumFrequency,
                               double maximumFrequency
@@ -14,7 +14,7 @@ WaterfallData::WaterfallData(
            // QVector<double> matrix = valueMatrix();
         //   double sf=Waterfallplot->GetStartFrequency();
             setInterval( Qt::XAxis, QwtInterval( minimumFrequency, maximumFrequency ) );
-            setInterval( Qt::YAxis, QwtInterval( 0, 50 ) );
+            setInterval( Qt::YAxis, QwtInterval( 0, HISTORY ) );
             setInterval( Qt::ZAxis, QwtInterval( -90.0, -20.0 ) );
 
 

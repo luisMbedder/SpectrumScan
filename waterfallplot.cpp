@@ -13,6 +13,7 @@
 #include "waterfallplot.h"
 #include "waterfalldata.h"
 #include "Sdrcapture.h"
+#include <QTime>
 
 class MyZoomer: public QwtPlotZoomer
 {
@@ -244,6 +245,48 @@ public:
     }
 };
 
+class TimeScaleDraw: public QwtScaleDraw
+{
+public:
+    TimeScaleDraw( const QTime &base ):
+        baseTime( base )
+    {
+    }
+    virtual QwtText label( double v ) const
+    {
+        QTime upTime = baseTime.addSecs( static_cast<int>( v ) );
+        return upTime.toString();
+    }
+private:
+    QTime baseTime;
+};
+/*
+class TimeScaleDraw: public QwtScaleDraw
+{
+public:
+    TimeScaleDraw( const QTime &base ):
+        baseTime( base )
+    {
+    }
+    virtual QwtText label( double v ) const
+    {
+        QTime upTime = baseTime.addSecs( static_cast<int>( v ) );
+        return upTime.toString();
+    }
+private:
+    QTime baseTime;
+};
+
+*/
+QTime Waterfallplot::upTime()
+{
+    QTime t( 0, 0, 0 );
+  //  for ( int i = 0; i < 4; i++ )
+   //    t = t.addSecs( int( procValues[i] / 100 ) );
+
+    return t;
+}
+
 Waterfallplot::Waterfallplot( QWidget *parent ):
     QwtPlot( parent ),
     d_alpha(255)
@@ -259,6 +302,9 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
     setAxisTitle(QwtPlot::xBottom, "Frequency (MHz)");
 
     setAxisTitle(QwtPlot::yLeft, "Time(s)");
+    setAxisScaleDraw( QwtPlot::yLeft,
+       new TimeScaleDraw( upTime() ) );
+    setAxisScale( QwtPlot::yLeft, 0, HISTORY );
 
     d_waterfall = new QwtPlotSpectrogram();
     d_waterfall ->setRenderThreadCount( 0 ); // use system specific thread count
@@ -280,8 +326,8 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
 
     setAxisScale(QwtPlot::xBottom,_startFrequency,_stopFrequency);
     setAxisMaxMinor(QwtPlot::xBottom,0);
-    setAxisScale(QwtPlot::yLeft,0,50);
-    setAxisMaxMinor(QwtPlot::yLeft,0);
+  //  setAxisScale(QwtPlot::yLeft,0,50);
+  //  setAxisMaxMinor(QwtPlot::yLeft,0);
 
     plotLayout()->setAlignCanvasToScales( true );
 
