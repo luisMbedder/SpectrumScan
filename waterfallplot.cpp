@@ -35,76 +35,6 @@ public:
     }
 };
 
-class SpectrogramData: public QwtMatrixRasterData//public QwtRasterData
-{
-public:
-    SpectrogramData(QVector<double> data)
-   // SpectrogramData()
-    {
-       //  this->
-      //  int columns = QwtMatrixRasterData::numColumns();
-        //int row = this->numRows();
-       // QVector<double> matrix = valueMatrix();
-    //   double sf=Waterfallplot->GetStartFrequency();
-        setInterval( Qt::XAxis, QwtInterval( 950.75, 953.2 ) );
-       setInterval( Qt::YAxis, QwtInterval( 0, 5 ) );
-       setInterval( Qt::ZAxis, QwtInterval( -90.0, -10.0 ) );
-
-
-         setValueMatrix(data,1024);
-        int columns = numColumns();
-        int row = this->numRows();
-         QVector<double> matrix = valueMatrix();
-       //  qDebug()<<matrix.first();
-      //   qDebug()<<matrix.last();
-       //  int a=0;
-         //replot();
-
-    }
-
-    SpectrogramData()
-   // SpectrogramData()
-    {
-       //  this->
-      //  int columns = QwtMatrixRasterData::numColumns();
-        //int row = this->numRows();
-       // QVector<double> matrix = valueMatrix();
-        setInterval( Qt::XAxis, QwtInterval( 950.75, 953.2 ) );
-        setInterval( Qt::YAxis, QwtInterval( 0, 5 ) );
-        setInterval( Qt::ZAxis, QwtInterval( -90.0, -10.0 ) );
-
-
-      //   setValueMatrix(values,1024);
-     //   int columns = numColumns();
-      //  int row = this->numRows();
-      //   QVector<double> matrix = valueMatrix();
-
-    }
-
-  /*  virtual double value( double x, double y ) const
-    {
-        //const double c = 0.842;
-        const double c = 0.33;
-        if(x>1.48){
-            int a =0;
-        }
-        if(y<-1.48){
-            int b =0;
-        }
-        const double v1 = x * x + ( y - c ) * ( y + c );
-        const double v2 = x * ( y + c ) + x * ( y + c );
-
-        int columns = numColumns();
-        int row = this->numRows();
-        //setValueMatrix(data,1024);
-         QVector<double> matrix = valueMatrix();
-
-        return 1.0 / ( v1 * v1 + v2 * v2 );
-
-    }*/
-};
-
-
 
 void Waterfallplot::SetFrequencyRange(double StartFreq,
                     double StopFreq)
@@ -311,7 +241,6 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
     d_waterfall ->setCachePolicy( QwtPlotRasterItem::PaintCache );
     waterfallData = new WaterfallData(_startFrequency,_stopFrequency);
     d_waterfall->setData(waterfallData);
-   // d_waterfall->setData( new SpectrogramData() ); //commented
     d_waterfall->attach( this );
 
    const QwtInterval zInterval = d_waterfall->data()->interval( Qt::ZAxis );//commented
@@ -383,14 +312,6 @@ void Waterfallplot::Reset(){
 
 }
 
-void Waterfallplot::SetWaterfallData(QVector<double> rasterVector){
-//SpectrogramData dat = new SpectrogramData();
-   // std::vector<double> rasterData;
-  //  int size = sizeof(data)/sizeof(*data);
-
-    d_waterfall->setData( new SpectrogramData(rasterVector) );
-    replot();
-}
 
 void Waterfallplot::showContour( bool on )
 {

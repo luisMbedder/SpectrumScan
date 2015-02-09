@@ -23,7 +23,6 @@ public:
 
     explicit Waterfallplot(QWidget *parent = 0);
 
-    void SetWaterfallData(QVector<double> rasterVector);
     void SetFrequencyRange(double StartFreq,
                         double StopFreq);
     double GetStartFrequency()const;
