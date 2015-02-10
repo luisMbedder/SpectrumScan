@@ -234,12 +234,14 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
     setAxisTitle(QwtPlot::yLeft, "Time(s)");
     setAxisScaleDraw( QwtPlot::yLeft,
        new TimeScaleDraw( upTime() ) );
-    setAxisScale( QwtPlot::yLeft, 0, HISTORY );
+    setAxisScale( QwtPlot::yLeft, 0, 60 );
+
+     ( void )startTimer( 1000 ); // 1 second
 
     d_waterfall = new QwtPlotSpectrogram();
     d_waterfall ->setRenderThreadCount( 0 ); // use system specific thread count
     d_waterfall ->setCachePolicy( QwtPlotRasterItem::PaintCache );
-    waterfallData = new WaterfallData(_startFrequency,_stopFrequency);
+    waterfallData = new WaterfallData(_startFrequency,_stopFrequency,1.0);
     d_waterfall->setData(waterfallData);
     d_waterfall->attach( this );
 
@@ -266,7 +268,7 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
     // MidButton for the panning
     // RightButton: zoom out by 1
     // Ctrl+RighButton: zoom out to full size
-
+/*
     QwtPlotZoomer* zoomer = new MyZoomer( canvas() );
     zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
         Qt::RightButton, Qt::ControlModifier );
@@ -276,6 +278,7 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
     QwtPlotPanner *panner = new QwtPlotPanner( canvas() );
     panner->setAxisEnabled( QwtPlot::yRight, false );
     panner->setMouseButton( Qt::MidButton );
+*/
 
     // Avoid jumping when labels with more/less digits
     // appear/disappear when scrolling vertically
@@ -284,9 +287,54 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
     QwtScaleDraw *sd = axisScaleDraw( QwtPlot::yLeft );
     sd->setMinimumExtent( fm.width( "100.00" ) );
 
-    const QColor c( Qt::darkBlue );
-    zoomer->setRubberBandPen( c );
-    zoomer->setTrackerPen( c );
+   // const QColor c( Qt::darkBlue );
+  //  zoomer->setRubberBandPen( c );
+ //   zoomer->setTrackerPen( c );
+}
+
+void Waterfallplot::timerEvent( QTimerEvent * )
+{
+
+    int a=0;
+   // waterfallData->setInterval(Qt::YAxis,QwtInterval(0,waterfallData->));
+    a++;
+    //PlotNewData();
+/*    for ( int i = dataCount; i > 0; i-- )
+    {
+
+
+
+
+
+        for ( int c = 0; c < NCpuData; c++ )
+        {
+            if ( i < HISTORY )
+                data[c].data[i] = data[c].data[i-1];
+        }
+    }
+
+    cpuStat.statistic( data[User].data[0], data[System].data[0] );
+
+    data[Total].data[0] = data[User].data[0] + data[System].data[0];
+    data[Idle].data[0] = 100.0 - data[Total].data[0];
+
+    if ( dataCount < HISTORY )
+        dataCount++;
+
+    for ( int j = 0; j < HISTORY; j++ )
+        timeData[j]++;
+
+    setAxisScale( QwtPlot::xBottom,
+        timeData[HISTORY - 1], timeData[0] );
+
+    for ( int c = 0; c < NCpuData; c++ )
+    {
+        data[c].curve->setRawSamples(
+            timeData, data[c].data, dataCount );
+    }
+
+    replot();*/
+    replot();
 }
 
 void Waterfallplot::PlotNewData(double* dataPoints){
@@ -299,7 +347,7 @@ void Waterfallplot::PlotNewData(double* dataPoints){
     d_waterfall->invalidateCache();
    d_waterfall->itemChanged();
 Reset();
-    replot();
+  //  replot();
 
 }
 
