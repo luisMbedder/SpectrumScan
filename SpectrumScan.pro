@@ -24,8 +24,7 @@ SOURCES += main.cpp\
     waterfallplot.cpp \
     qwt_double_rect.cpp \
     qwt_double_interval.cpp \
-    waterfalldata.cpp \
-    newwaterfallplot.cpp
+    waterfalldata.cpp
 
 HEADERS  += \
     gui.h \
@@ -34,8 +33,7 @@ HEADERS  += \
     waterfallplot.h \
     qwt_double_rect.h \
     qwt_double_interval.h \
-    waterfalldata.h \
-    newwaterfallplot.h
+    waterfalldata.h
 
 FORMS    += \
     gui.ui
