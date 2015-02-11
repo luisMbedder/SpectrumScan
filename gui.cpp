@@ -249,7 +249,7 @@ void Gui::doneCapture()
     }
 
     plot->SetData(data_result);
-    //waterfall->addFFTData(data_result);
+   // waterfall->addFFTData(data_result);
    waterfall->PlotNewData(data_result);//waterfallData->addFFTData(data_result);
 
     //Save IQ and FFT block if requested

@@ -29,7 +29,7 @@ public:
     double GetStopFrequency()const;
     void PlotNewData(double* dataPoints);
     QTime upTime();
-    void timerEvent( QTimerEvent * );
+  //  void timerEvent( QTimerEvent * );
    void Reset();
 
 //void  UpdateInterval(double startFreq,double stopFreq);

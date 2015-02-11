@@ -232,16 +232,16 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
     setAxisTitle(QwtPlot::xBottom, "Frequency (MHz)");
 
     setAxisTitle(QwtPlot::yLeft, "Time(s)");
-    setAxisScaleDraw( QwtPlot::yLeft,
-       new TimeScaleDraw( upTime() ) );
+   // setAxisScaleDraw( QwtPlot::yLeft,
+    //   new TimeScaleDraw( upTime() ) );
     setAxisScale( QwtPlot::yLeft, 0, 60 );
 
-     ( void )startTimer( 1000 ); // 1 second
+    // ( void )startTimer( 1000 ); // 1 second
 
     d_waterfall = new QwtPlotSpectrogram();
     d_waterfall ->setRenderThreadCount( 0 ); // use system specific thread count
     d_waterfall ->setCachePolicy( QwtPlotRasterItem::PaintCache );
-    waterfallData = new WaterfallData(_startFrequency,_stopFrequency,1.0);
+    waterfallData = new WaterfallData(_startFrequency,_stopFrequency,FFT_LENGTH,60);
     d_waterfall->setData(waterfallData);
     d_waterfall->attach( this );
 
@@ -292,68 +292,23 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
  //   zoomer->setTrackerPen( c );
 }
 
-void Waterfallplot::timerEvent( QTimerEvent * )
-{
-
-    int a=0;
-   // waterfallData->setInterval(Qt::YAxis,QwtInterval(0,waterfallData->));
-    a++;
-    //PlotNewData();
-/*    for ( int i = dataCount; i > 0; i-- )
-    {
-
-
-
-
-
-        for ( int c = 0; c < NCpuData; c++ )
-        {
-            if ( i < HISTORY )
-                data[c].data[i] = data[c].data[i-1];
-        }
-    }
-
-    cpuStat.statistic( data[User].data[0], data[System].data[0] );
-
-    data[Total].data[0] = data[User].data[0] + data[System].data[0];
-    data[Idle].data[0] = 100.0 - data[Total].data[0];
-
-    if ( dataCount < HISTORY )
-        dataCount++;
-
-    for ( int j = 0; j < HISTORY; j++ )
-        timeData[j]++;
-
-    setAxisScale( QwtPlot::xBottom,
-        timeData[HISTORY - 1], timeData[0] );
-
-    for ( int c = 0; c < NCpuData; c++ )
-    {
-        data[c].curve->setRawSamples(
-            timeData, data[c].data, dataCount );
-    }
-
-    replot();*/
-    replot();
-}
-
 void Waterfallplot::PlotNewData(double* dataPoints){
 
   //  d_waterfall->invalidateCache();
   // d_waterfall->itemChanged();
-
+Reset();
     waterfallData->addFFTData(dataPoints);
-
+    waterfallData->IncrementNumLinesToUpdate();
     d_waterfall->invalidateCache();
    d_waterfall->itemChanged();
-Reset();
-  //  replot();
+
+    replot();
 
 }
 
 void Waterfallplot::Reset(){
     waterfallData->ResizeData(_startFrequency,_stopFrequency);
-  //  waterfallData->Reset();
+   waterfallData->Reset();
 
     setAxisScale(QwtPlot::xBottom, _startFrequency, _stopFrequency);
 

@@ -5,11 +5,12 @@
 WaterfallData::WaterfallData(
                               double minimumFrequency,
                               double maximumFrequency,
-                              double historyExtent
+                              uint64_t fftPoints,
+                              unsigned int historyExtent
                                ): QwtMatrixRasterData()//public QwtRasterData
 {
 
-    _fftPoints = FFT_LENGTH;
+    _fftPoints = fftPoints;
     _historyLength = historyExtent;
     _spectrumData = new double[_fftPoints*_historyLength];
             setInterval( Qt::XAxis, QwtInterval( minimumFrequency, maximumFrequency ) );
@@ -30,6 +31,11 @@ WaterfallData::WaterfallData(
 
 }
 
+WaterfallData::~WaterfallData()
+{
+  delete[] _spectrumData;
+}
+
 void WaterfallData::Reset()
 {
   memset(_spectrumData, 0x0, _fftPoints*_historyLength*sizeof(double));
@@ -42,24 +48,93 @@ void WaterfallData::UpdateInterval(double startFreq,double stopFreq){
 
 }
 
+void WaterfallData::Copy(const WaterfallData* rhs)
+{
+
+  if(_fftPoints != rhs->GetNumFFTPoints()) {
+    _fftPoints = rhs->GetNumFFTPoints();
+    delete[] _spectrumData;
+    _spectrumData = new double[_fftPoints * _historyLength];
+  }
+
+
+  Reset();
+  SetSpectrumDataBuffer(rhs->GetSpectrumDataBuffer());
+  SetNumLinesToUpdate(rhs->GetNumLinesToUpdate());
+
+  setInterval(Qt::XAxis, rhs->interval(Qt::XAxis));
+  setInterval(Qt::YAxis, rhs->interval(Qt::YAxis));
+  setInterval(Qt::ZAxis, rhs->interval(Qt::ZAxis));
+
+}
+
+QwtRasterData *WaterfallData::copy() const
+{
+
+  WaterfallData* returnData =  new WaterfallData(interval(Qt::XAxis).minValue(),
+                         interval(Qt::XAxis).maxValue(),
+                         _fftPoints, _historyLength);
+
+
+  returnData->Copy(this);
+  return returnData;
+}
+
+
 void WaterfallData::ResizeData(double startFreq,
                    double stopFreq){
 
-    setInterval(Qt::XAxis, QwtInterval(startFreq, stopFreq));
+    if((interval(Qt::XAxis).width() != (stopFreq - startFreq)) ||
+       (interval(Qt::XAxis).minValue() != startFreq)){
 
+      setInterval(Qt::XAxis, QwtInterval(startFreq, stopFreq));
 
+    //  _fftPoints = fftPoints;
+      delete[] _spectrumData;
+      _spectrumData = new double[_fftPoints * _historyLength];
+    }
 
+    Reset();
+
+}
+
+uint64_t WaterfallData::GetNumFFTPoints() const
+{
+  return _fftPoints;
 }
 
 void WaterfallData::addFFTData(double *fftData){
     double result[FFT_LENGTH];
 
-    //double result2[1024];
-/*    for(int i =0;i<1024;i++)
-    {
-        result[i]=*fftData;
-        fftData++;
-    }*/
+
+    int droppedFrames=0;
+    int64_t heightOffset = _historyLength - 1 - droppedFrames;
+    uint64_t drawingDroppedFrames = droppedFrames;
+
+    // Any valid data rolled off the display so just fill in zeros and write new data
+    if(heightOffset < 0){
+      heightOffset = 0;
+      drawingDroppedFrames = static_cast<uint64_t>(_historyLength-1);
+    }
+
+    // Copy the old data over if any available
+    if(heightOffset > 0){
+      memmove( _spectrumData, &_spectrumData[(drawingDroppedFrames+1) * _fftPoints],
+           heightOffset * _fftPoints * sizeof(double)) ;
+    }
+
+    if(drawingDroppedFrames > 0){
+      // Fill in zeros data for dropped data
+      memset(&_spectrumData[heightOffset * _fftPoints], 0x00,
+         static_cast<int64_t>(drawingDroppedFrames) * _fftPoints * sizeof(double));
+    }
+
+    // add the new buffer
+    memcpy(&_spectrumData[(_historyLength - 1) * _fftPoints], fftData,
+       _fftPoints*sizeof(double));
+
+
+    /*
     memcpy(&result, fftData,FFT_LENGTH*sizeof(double));
 
     std::vector<double> rasterData;
@@ -78,6 +153,7 @@ void WaterfallData::addFFTData(double *fftData){
     double val = value(DEFAULT_CENTER_FREQUENCY/1000000.0 -1.2,60);
    //  qDebug()<<matrix.first();
     // qDebug()<<matrix.last();
+    */
 
 }
 
@@ -87,15 +163,12 @@ double WaterfallData::value(double x, double y) const
  QVector<double> matrix = valueMatrix();
  //QRectF pixel = pixelHint();
  //double val = value(DEFAULT_CENTER_FREQUENCY/1000000.0 -1.2,60);
-  qDebug()<<matrix.first();
-  qDebug()<<matrix.last();
-
-#if QWT_VERSION < 0x060000
-  const unsigned int intY = static_cast<unsigned int>((1.0 - (y/boundingRect().height())) *
-                              static_cast<double>(_historyLength-1));
-  const unsigned int intX = static_cast<unsigned int>((((x - boundingRect().left()) / boundingRect().width()) *
-                               static_cast<double>(_fftPoints-1)) + 0.5);
-#else
+//  qDebug()<<matrix.first();
+ // qDebug()<<matrix.last();
+if(y<60)
+{
+ int a =0;
+}
   double height = interval(Qt::YAxis).maxValue();
   double left = interval(Qt::XAxis).minValue();
   double right = interval(Qt::XAxis).maxValue();
@@ -103,12 +176,48 @@ double WaterfallData::value(double x, double y) const
   double xlen = static_cast<double>(_fftPoints-1);
   const unsigned int intY = static_cast<unsigned int>((1.0 - y/height) * ylen);
   const unsigned int intX = static_cast<unsigned int>((((x - left) / (right-left)) * xlen) + 0.5);
-#endif
+if(intY>=1)
+{
+ int b=0;
+}
 
   const int location = (intY * _fftPoints) + intX;
   if((location > -1) && (location < static_cast<int64_t>(_fftPoints * _historyLength))){
     returnValue = _spectrumData[location];
   }
+  if(returnValue!=0)
+  {
+      int c =0;
+
+  }
 
   return returnValue;
 }
+
+
+double* WaterfallData::GetSpectrumDataBuffer() const
+{
+  return _spectrumData;
+}
+
+void WaterfallData::SetSpectrumDataBuffer(const double* newData)
+{
+  memcpy(_spectrumData, newData, _fftPoints * _historyLength * sizeof(double));
+}
+
+int WaterfallData::GetNumLinesToUpdate() const
+{
+  return _numLinesToUpdate;
+}
+
+void WaterfallData::SetNumLinesToUpdate(const int newNum)
+{
+  _numLinesToUpdate = newNum;
+}
+
+void WaterfallData::IncrementNumLinesToUpdate()
+{
+  _numLinesToUpdate++;
+}
+
+
