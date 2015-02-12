@@ -12,6 +12,7 @@ public:
                    double maximumFrequency,
                    uint64_t fftPoints,
                    unsigned int historyExtent);
+   virtual ~WaterfallData();
 
     void UpdateInterval(double startFreq,double stopFreq);
     void addFFTData(double *fftData);

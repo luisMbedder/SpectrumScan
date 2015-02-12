@@ -52,6 +52,10 @@ void Waterfallplot::SetFrequencyRange(double StartFreq,
 
     setAxisScale( QwtPlot::xBottom, StartFreq, StopFreq );
 
+    if(reset) {
+  Reset();
+    }
+
   //  setInterval( Qt::YAxis, QwtInterval( 0, 5 ) );
   //  setInterval( Qt::ZAxis, QwtInterval( -90.0, -10.0 ) );
 //replot();
@@ -294,9 +298,8 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
 
 void Waterfallplot::PlotNewData(double* dataPoints){
 
-  //  d_waterfall->invalidateCache();
-  // d_waterfall->itemChanged();
-Reset();
+
+    //Reset(); //this clears the _spectrumData buffer
     waterfallData->addFFTData(dataPoints);
     waterfallData->IncrementNumLinesToUpdate();
     d_waterfall->invalidateCache();
