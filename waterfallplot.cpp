@@ -1,3 +1,17 @@
+/********************************************************************
+* Project: SpectrumScan
+*
+* File: waterfallplot.cpp
+*
+* Written by: LuisMbedder
+*
+* Description:  Contains all vairalbes
+* and methods to generate the waterfall plot. See waterfallplot.h
+* for more info.
+*
+* notes:
+********************************************************************/
+
 #include <qprinter.h>
 #include <qprintdialog.h>
 #include <qnumeric.h>
@@ -15,32 +29,10 @@
 #include "Sdrcapture.h"
 #include <QTime>
 
-class MyZoomer: public QwtPlotZoomer
-{
-public:
-    MyZoomer( QWidget *canvas ):
-        QwtPlotZoomer( canvas )
-    {
-        setTrackerMode( AlwaysOn );
-    }
-
-    virtual QwtText trackerTextF( const QPointF &pos ) const
-    {
-        QColor bg( Qt::white );
-        bg.setAlpha( 200 );
-
-        QwtText text = QwtPlotZoomer::trackerTextF( pos );
-        text.setBackgroundBrush( QBrush( bg ) );
-        return text;
-    }
-};
-
 
 void Waterfallplot::SetFrequencyRange(double StartFreq,
                     double StopFreq)
 {
-//  double startFreq = constStartFreq;
- // double stopFreq = constStopFreq ;
 
   bool reset = false;
   if((StartFreq != _startFrequency) || (StopFreq != _stopFrequency))
@@ -53,26 +45,20 @@ void Waterfallplot::SetFrequencyRange(double StartFreq,
     setAxisScale( QwtPlot::xBottom, StartFreq, StopFreq );
 
     if(reset) {
-  Reset();
+        Reset();
     }
-
-  //  setInterval( Qt::YAxis, QwtInterval( 0, 5 ) );
-  //  setInterval( Qt::ZAxis, QwtInterval( -90.0, -10.0 ) );
-//replot();
   }
 
 }
 
 
 
-double
-Waterfallplot::GetStartFrequency() const
+double Waterfallplot::GetStartFrequency() const
 {
   return _startFrequency;
 }
 
-double
-Waterfallplot::GetStopFrequency() const
+double Waterfallplot::GetStopFrequency() const
 {
   return _stopFrequency;
 }
@@ -194,24 +180,7 @@ public:
 private:
     QTime baseTime;
 };
-/*
-class TimeScaleDraw: public QwtScaleDraw
-{
-public:
-    TimeScaleDraw( const QTime &base ):
-        baseTime( base )
-    {
-    }
-    virtual QwtText label( double v ) const
-    {
-        QTime upTime = baseTime.addSecs( static_cast<int>( v ) );
-        return upTime.toString();
-    }
-private:
-    QTime baseTime;
-};
 
-*/
 QTime Waterfallplot::upTime()
 {
     QTime t( 0, 0, 0 );
@@ -234,19 +203,12 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
     canvas()->setPalette(palette);
 
     setAxisTitle(QwtPlot::xBottom, "Frequency (MHz)");
-
     setAxisTitle(QwtPlot::yLeft, "Spectrum History");
-   // setAxisScaleDraw( QwtPlot::yLeft,
-    //   new TimeScaleDraw( upTime() ) );
-    //
     setAxisScale( QwtPlot::yLeft, 0, FFT_HISTORY );
-
-    // ( void )startTimer( 1000 ); // 1 second
 
     d_waterfall = new QwtPlotSpectrogram();
     d_waterfall ->setRenderThreadCount( 0 ); // use system specific thread count
     d_waterfall ->setCachePolicy( QwtPlotRasterItem::PaintCache );
-    //200 fft's produces a nice resolution
     waterfallData = new WaterfallData(_startFrequency,_stopFrequency,FFT_LENGTH,FFT_HISTORY);
     d_waterfall->setData(waterfallData);
     d_waterfall->attach( this );
@@ -255,7 +217,7 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
 
     // A color bar on the right axis
     QwtScaleWidget *rightAxis = axisWidget( QwtPlot::yRight );
-    rightAxis->setTitle( "Intensity" );
+    rightAxis->setTitle( "Intensity(dB)" );
     rightAxis->setColorBarEnabled( true );
 
     setAxisScale( QwtPlot::yRight, zInterval.minValue(), zInterval.maxValue() ); //commented
@@ -263,28 +225,10 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
 
     setAxisScale(QwtPlot::xBottom,_startFrequency,_stopFrequency);
     setAxisMaxMinor(QwtPlot::xBottom,0);
-  //  setAxisScale(QwtPlot::yLeft,0,50);
-  //  setAxisMaxMinor(QwtPlot::yLeft,0);
 
     plotLayout()->setAlignCanvasToScales( true );
+    setColorMap( Waterfallplot::RGBMap );
 
-   setColorMap( Waterfallplot::RGBMap ); //commented
-
-    // LeftButton for the zooming
-    // MidButton for the panning
-    // RightButton: zoom out by 1
-    // Ctrl+RighButton: zoom out to full size
-/*
-    QwtPlotZoomer* zoomer = new MyZoomer( canvas() );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
-        Qt::RightButton, Qt::ControlModifier );
-    zoomer->setMousePattern( QwtEventPattern::MouseSelect3,
-        Qt::RightButton );
-
-    QwtPlotPanner *panner = new QwtPlotPanner( canvas() );
-    panner->setAxisEnabled( QwtPlot::yRight, false );
-    panner->setMouseButton( Qt::MidButton );
-*/
 
     // Avoid jumping when labels with more/less digits
     // appear/disappear when scrolling vertically
@@ -293,31 +237,25 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
     QwtScaleDraw *sd = axisScaleDraw( QwtPlot::yLeft );
     sd->setMinimumExtent( fm.width( "100.00" ) );
 
-   // const QColor c( Qt::darkBlue );
-  //  zoomer->setRubberBandPen( c );
- //   zoomer->setTrackerPen( c );
 }
 
 void Waterfallplot::PlotNewData(double* dataPoints){
 
 
-    //Reset(); //this clears the _spectrumData buffer
     waterfallData->addFFTData(dataPoints);
     waterfallData->IncrementNumLinesToUpdate();
     d_waterfall->invalidateCache();
-   d_waterfall->itemChanged();
+    d_waterfall->itemChanged();
 
     replot();
 
 }
 
 void Waterfallplot::Reset(){
+
     waterfallData->ResizeData(_startFrequency,_stopFrequency);
-   waterfallData->Reset();
-
+    waterfallData->Reset();
     setAxisScale(QwtPlot::xBottom, _startFrequency, _stopFrequency);
-
-
 }
 
 
@@ -390,29 +328,4 @@ void Waterfallplot::setAlpha( int alpha )
     }
 }
 
-#ifndef QT_NO_PRINTER
 
-void Waterfallplot::printPlot()
-{
-    QPrinter printer( QPrinter::HighResolution );
-    printer.setOrientation( QPrinter::Landscape );
-    printer.setOutputFileName( "spectrogram.pdf" );
-
-    QPrintDialog dialog( &printer );
-    if ( dialog.exec() )
-    {
-        QwtPlotRenderer renderer;
-
-        if ( printer.colorMode() == QPrinter::GrayScale )
-        {
-            renderer.setDiscardFlag( QwtPlotRenderer::DiscardBackground );
-            renderer.setDiscardFlag( QwtPlotRenderer::DiscardCanvasBackground );
-            renderer.setDiscardFlag( QwtPlotRenderer::DiscardCanvasFrame );
-            renderer.setLayoutFlag( QwtPlotRenderer::FrameWithScales );
-        }
-
-        renderer.renderTo( this, printer );
-    }
-}
-
-#endif

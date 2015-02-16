@@ -1,3 +1,17 @@
+/********************************************************************
+* Project: SpectrumScan
+*
+* File: gui.cpp
+*
+* Created by: LuisMbedder
+*
+* Description: This class creates the instantanous and waterfall
+*               plots, initializes the SDR hardware,handles the
+*               GUI events, and processes the IQ data samples.
+*
+* notes:
+********************************************************************/
+
 #include "gui.h"
 #include "ui_gui.h"
 #include "spectrograph.h"
@@ -9,8 +23,6 @@
 #include "Sdrcapture.h"
 #include <QVector>
 #include "math.h"
-
-
 #include <stdio.h>
 
 Gui::Gui(QWidget *parent) :
@@ -24,39 +36,29 @@ Gui::Gui(QWidget *parent) :
     overflow_warning_displayed = false;
     save_next = false;
     mode = SPECTROGRAPH;
-   //create spectrograph plot, default graph
+    //create spectrograph plot, default plot
     plot = new Spectrograph(this);
     plot->setGeometry(10, 10, 780, 330);
 
-     QwtScaleWidget *bottomScale =plot->axisWidget(QwtPlot::xBottom);
-     QPalette bottomPalette = bottomScale->palette();
-     bottomPalette.setColor( QPalette::WindowText, Qt::white); // for ticks
+    QwtScaleWidget *bottomScale =plot->axisWidget(QwtPlot::xBottom);
+    QPalette bottomPalette = bottomScale->palette();
+    bottomPalette.setColor( QPalette::WindowText, Qt::white); // for ticks
     bottomPalette.setColor( QPalette::Text, Qt::white); //for ticks labels
     bottomScale->setPalette( bottomPalette );
 
     QwtScaleWidget *leftScale = plot->axisWidget(QwtPlot::yLeft);
     QPalette leftPalette = leftScale->palette();
     leftPalette.setColor( QPalette::WindowText, Qt::white); // for ticks
-   leftPalette.setColor( QPalette::Text, Qt::white); // for ticks labels
-   leftScale->setPalette( leftPalette );
+    leftPalette.setColor( QPalette::Text, Qt::white); // for ticks labels
+    leftScale->setPalette( leftPalette );
 
- //create waterfall plot, hidden by default
-   waterfall = new Waterfallplot(this);
-   waterfall->setGeometry(10,10,780,330);
-   waterfall->hide();
+    //create waterfall plot, hidden by default
+    waterfall = new Waterfallplot(this);
+    waterfall->setGeometry(10,10,780,330);
+    waterfall->hide();
 
     ui->setupUi(this);
     ui->label_gainhigh->setVisible(false);
-    /*ui->tabWidget->setCurrentIndex(0);
-    ui->label_gainhigh->setVisible(false);
-    ui->label_targetfrequency->setVisible(false);
-
-    ui->pushButton_Capture->setVisible(false);      // hide capture pushbutton
-    ui->label_counter->setVisible(false);           // hide counter text
-    */
-#ifdef USE_KISSFFT
-    mycfg = kiss_fft_alloc(FFT_LENGTH, 0, NULL, NULL);
-#endif
 
 #ifdef USE_AVFFT
     fft_context = av_fft_init(FFT_LENGTH_2N,0);//set up a complex FFT
@@ -89,15 +91,7 @@ Gui::Gui(QWidget *parent) :
     gain_correction = 0;
     phase_correction = 0;
 
-    sdrCapture = new Sdrcapture();
-    if(sdrCapture->isE4000()){
-        //ui->checkBox_offsettuning->setEnabled(true);
-        //ui->checkBox_offsettuning->setVisible(true);
-    }
-    else{
-        //ui->checkBox_offsettuning->setEnabled(false);
-        //ui->checkBox_offsettuning->setVisible(false);
-    }
+    sdrCapture = new Sdrcapture();//initialize SDR hardware
     num_gains = sdrCapture->get_num_gains();
     ui->gainSlider->setMaximum(num_gains-1);
     sdrThread = new QThread();
@@ -114,9 +108,6 @@ Gui::Gui(QWidget *parent) :
     set_target_frequency(DEFAULT_CENTER_FREQUENCY);
     set_target_gain(1);
     emit startCapture();
-    if(sdrCapture->isE4000()){
-        //ui->checkBox_offsettuning->click();
-    }
     set_target_gain(num_gains/2);
 }
 
@@ -135,10 +126,9 @@ Gui::~Gui()
  ****************************************************************************/
 void Gui::doneCapture()
 {
-    count++;                        //Counter for working out FFT update rate
+    count++;             //Counter for working out FFT update rate
     QString text;
     text.sprintf("%d", count);
-    //ui->label_counter->setText(text);
 
     uint8_t re,im;
     float f_re, f_im;
@@ -147,13 +137,13 @@ void Gui::doneCapture()
 
     int i,j;
     for (i = 0; i < FFT_LENGTH; i++) {
-        data_result[i] = 0;                 //Initialize PSD output
-        re = sdr_buffer[2*i];               //Check for overflow
+        data_result[i] = 0;         //Initialize PSD output
+        re = sdr_buffer[2*i];       //Check for overflow
         im = sdr_buffer[2*i+1];
         if(re<5 || re>250 || im<5 || im>250) overflow = true;
     }
 
-    //calc block DC average
+    //calculate block DC average
     ptr = pti = 0;
     for (i=0; i<BLOCK_LENGTH; ++i){
         ptr += sdr_buffer[2*i];
@@ -166,7 +156,7 @@ void Gui::doneCapture()
     int slide_length = 0;
     for(j=0; j< FFT_NUM_BLOCKS; ++j){
         for (i = 0; i < FFT_LENGTH; i++) {
-            //remove the dC average from the signal before applying the FFT
+            //remove the DC average from the signal before applying the FFT
             f_re = sdr_buffer[slide_length+2*i] - dc_i_average;
             f_im = sdr_buffer[slide_length+2*i+1] - dc_q_average;
             //apply hamming window
@@ -232,11 +222,9 @@ void Gui::doneCapture()
              title2.setColor(Qt::white);
              plot->setTitle(title2);
              waterfall->setTitle(title2);
-             //bandwidth is 2.5MHz so +-(2.5MHz/2) to center freq_MHz
+             //bandwidth is 2.4MHz so +-(2.4MHz/2) to center freq_MHz
              plot->SetXRange(freq_MHz-1.2, freq_MHz+1.2);
-            // if(waterfall->isVisible()){
              waterfall->SetFrequencyRange(freq_MHz-1.2, freq_MHz+1.2);
-           //  }
              display_locked_frequency = sdrCapture->locked_frequency;
          }
     }
@@ -249,8 +237,7 @@ void Gui::doneCapture()
     }
 
     plot->SetData(data_result);
-   // waterfall->addFFTData(data_result);
-   waterfall->PlotNewData(data_result);//waterfallData->addFFTData(data_result);
+    waterfall->PlotNewData(data_result);
 
     //Save IQ and FFT block if requested
     if(save_next){
@@ -378,37 +365,26 @@ void Gui::on_pushButton_GainInc_2_clicked()
 
 void Gui::on_pushButton_GainDec_clicked()
 {
-    if(target_gain>0) set_target_gain(target_gain-1);
+    if(target_gain>0){
+        set_target_gain(target_gain-1);
+    }
 }
 
-/*****************************************************************************
- * Event handler for enable/disable offset tuning for the E4000 tuner
- ****************************************************************************/
-void Gui::on_checkBox_offsettuning_clicked(bool checked)
-{
-    emit setRtlOffsetTuning(checked);
-}
-
-/*****************************************************************************
- * Event handler for capture button, triggers the saving of next IQ block to
- * file.
- ****************************************************************************/
-void Gui::on_pushButton_Capture_clicked()
-{
-    save_next = true;
-}
 
 /*****************************************************************************
  * Exit
  ****************************************************************************/
 void Gui::on_pushButton_Exit_clicked()
 {
-    this->close();
+    qApp->exit();
+
 }
 
+/*****************************************************************************
+ * Switch plot mode
+ ****************************************************************************/
 void Gui::on_pushButton_Mode_clicked()
 {
-
 
   if(mode==SPECTROGRAPH){
         mode=WATERFALL;

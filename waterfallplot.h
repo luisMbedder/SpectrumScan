@@ -1,3 +1,16 @@
+/********************************************************************
+* Project: SpectrumScan
+*
+* File: waterfallplot.h
+*
+* Created by: LuisMbedder
+*
+* Description: Contains all vairalbes
+* and methods to generate the waterfall plot.
+*
+* notes:
+********************************************************************/
+
 #ifndef WATERFALLPLOT_H
 #define WATERFALLPLOT_H
 
@@ -6,7 +19,7 @@
 #include "waterfalldata.h"
 #include "Sdrcapture.h"
 
-#define FFT_HISTORY (200)
+#define FFT_HISTORY (200) //200 fft's produces a nice resolution
 #define WATERFALL_AREA (FFT_LENGTH*FFT_HISTORY)
 
 
@@ -24,17 +37,14 @@ public:
     };
 
     explicit Waterfallplot(QWidget *parent = 0);
-
-    void SetFrequencyRange(double StartFreq,
-                        double StopFreq);
+    //sets the x-axis frequency range
+    void SetFrequencyRange(double StartFreq,double StopFreq);
     double GetStartFrequency()const;
     double GetStopFrequency()const;
+    //adds new fft data to the waterfall data buffer
     void PlotNewData(double* dataPoints);
     QTime upTime();
-  //  void timerEvent( QTimerEvent * );
-   void Reset();
-
-//void  UpdateInterval(double startFreq,double stopFreq);
+    void Reset();
 
 signals:
 
@@ -47,12 +57,10 @@ public slots:
 
 private:
     QwtPlotSpectrogram *d_waterfall;
-
     int d_mapType;
     int d_alpha;
     double _startFrequency;
     double _stopFrequency;
-//    CpuStat cpuStat;
     WaterfallData * waterfallData;
 
 };

@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "rtl-sdr.h"
 
 //#define USE_KISSFFT
-#define USE_AVFFT                               //AVFFT is a touch faster
+#define USE_AVFFT                          //AVFFT is a touch faster
 
 #define HAMMING_WINDOW
 //#define BLACKMANNUTALL_WINDOW

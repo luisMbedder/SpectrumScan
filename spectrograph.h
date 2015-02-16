@@ -4,7 +4,7 @@
 * File: Spectrograph.cpp
 *
 * Description: This file defines the spectrogrpah class
-*              used to display the RF spectrum in real time.
+*              used to display the instantaneous RF spectrum.
 *
 *
 * notes:
@@ -29,18 +29,6 @@
 #include "Sdrcapture.h"
 
 
-/**************************************************************
- * Class name: Spectrograph
- *
- * Created by: LuisMbedder
- *
- * Description: This class creates the plot to
- *              display the spectrum.
- *
- * Notes:
- **************************************************************/
-
-
 class Spectrograph : public QwtPlot
 {
     Q_OBJECT
@@ -49,7 +37,6 @@ public:
     /*
     * Constructor: Spectrograph
     * Usage: Spectrograph plot = new Spectrograph(parent);
-    *        Spectrograph plot = new Spectrograph();
     * ---------------------------
     * creates a new Spectrograph plot.
     */
