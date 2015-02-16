@@ -3,7 +3,8 @@
 #include<qwt_raster_data.h>
 #include<qwt_matrix_raster_data.h>
 #include <inttypes.h>
-
+#define MIN_INTENSITY (-90.0)
+#define MAX_INTENSITY (-20.0)
 
 class WaterfallData: public QwtMatrixRasterData
 {

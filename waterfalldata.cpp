@@ -15,7 +15,7 @@ WaterfallData::WaterfallData(
     _spectrumData = new double[_fftPoints*_historyLength];
             setInterval( Qt::XAxis, QwtInterval( minimumFrequency, maximumFrequency ) );
             setInterval( Qt::YAxis, QwtInterval( 0, historyExtent ) );
-            setInterval( Qt::ZAxis, QwtInterval( -90.0, -20.0 ) );
+            setInterval( Qt::ZAxis, QwtInterval( MIN_INTENSITY, MAX_INTENSITY ) );
 
 
         //     setValueMatrix(fftData,1024);
@@ -108,7 +108,7 @@ void WaterfallData::addFFTData(double *fftData){
 
 
     int droppedFrames=0;
-    int64_t heightOffset = _historyLength - 1 - droppedFrames;
+    int heightOffset = _historyLength - 1 - droppedFrames;
     uint64_t drawingDroppedFrames = droppedFrames;
 
     // Any valid data rolled off the display so just fill in zeros and write new data
@@ -126,7 +126,7 @@ void WaterfallData::addFFTData(double *fftData){
     if(drawingDroppedFrames > 0){
       // Fill in zeros data for dropped data
       memset(&_spectrumData[heightOffset * _fftPoints], 0x00,
-         static_cast<int64_t>(drawingDroppedFrames) * _fftPoints * sizeof(double));
+         drawingDroppedFrames * _fftPoints * sizeof(double));
     }
 
     // add the new buffer
@@ -165,10 +165,9 @@ double WaterfallData::value(double x, double y) const
  //double val = value(DEFAULT_CENTER_FREQUENCY/1000000.0 -1.2,60);
 //  qDebug()<<matrix.first();
  // qDebug()<<matrix.last();
-if(y<60)
-{
- int a =0;
-}
+// QRectF area =
+
+
   double height = interval(Qt::YAxis).maxValue();
   double left = interval(Qt::XAxis).minValue();
   double right = interval(Qt::XAxis).maxValue();
@@ -176,19 +175,13 @@ if(y<60)
   double xlen = static_cast<double>(_fftPoints-1);
   const unsigned int intY = static_cast<unsigned int>((1.0 - y/height) * ylen);
   const unsigned int intX = static_cast<unsigned int>((((x - left) / (right-left)) * xlen) + 0.5);
-if(intY>=1)
-{
- int b=0;
-}
+QRect area(qreal(0),qreal(0),qreal(height),qreal(left-right));
+   QRectF pixelGeom = pixelHint(area);
 
   const int location = (intY * _fftPoints) + intX;
-  if((location > -1) && (location < static_cast<int64_t>(_fftPoints * _historyLength))){
-    returnValue = _spectrumData[location];
-  }
-  if(returnValue!=0)
-  {
-      int c =0;
 
+  if((location > -1) && (location < WATERFALL_AREA)){
+    returnValue = _spectrumData[location];
   }
 
   return returnValue;

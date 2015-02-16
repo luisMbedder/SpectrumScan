@@ -4,9 +4,11 @@
 #include <qwt_plot.h>
 #include <qwt_plot_spectrogram.h>
 #include "waterfalldata.h"
-//#include "cpustat.h"
+#include "Sdrcapture.h"
 
-#define HISTORY 60 // seconds
+#define FFT_HISTORY (200)
+#define WATERFALL_AREA (FFT_LENGTH*FFT_HISTORY)
+
 
 class Waterfallplot : public QwtPlot
 {

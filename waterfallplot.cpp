@@ -235,17 +235,19 @@ Waterfallplot::Waterfallplot( QWidget *parent ):
 
     setAxisTitle(QwtPlot::xBottom, "Frequency (MHz)");
 
-    setAxisTitle(QwtPlot::yLeft, "Time(s)");
+    setAxisTitle(QwtPlot::yLeft, "Spectrum History");
    // setAxisScaleDraw( QwtPlot::yLeft,
     //   new TimeScaleDraw( upTime() ) );
-    setAxisScale( QwtPlot::yLeft, 0, 60 );
+    //
+    setAxisScale( QwtPlot::yLeft, 0, FFT_HISTORY );
 
     // ( void )startTimer( 1000 ); // 1 second
 
     d_waterfall = new QwtPlotSpectrogram();
     d_waterfall ->setRenderThreadCount( 0 ); // use system specific thread count
     d_waterfall ->setCachePolicy( QwtPlotRasterItem::PaintCache );
-    waterfallData = new WaterfallData(_startFrequency,_stopFrequency,FFT_LENGTH,60);
+    //200 fft's produces a nice resolution
+    waterfallData = new WaterfallData(_startFrequency,_stopFrequency,FFT_LENGTH,FFT_HISTORY);
     d_waterfall->setData(waterfallData);
     d_waterfall->attach( this );
 
