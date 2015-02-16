@@ -15,7 +15,9 @@
   </property>
   <property name="styleSheet">
    <string notr="true">#Gui{
-background:rgb(29,100,141)
+background:rgb(29,100,141);
+
+
 
 }</string>
   </property>
