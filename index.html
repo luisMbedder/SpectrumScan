@@ -8,6 +8,12 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+<!-- Include *at least* the core style and default theme -->
+<script type="text/javascript" src="javascripts/XRegExp.js"></script> <!-- XRegExp is bundled with the final shCore.js during build -->
+  <script type="text/javascript" src="javascripts/shCore.js"></script>
+  <script type="text/javascript" src="javascripts/shBrushBash.js"></script>
+  <link type="text/css" rel="stylesheet" href="stylesheets/shCore.css"/>
+  <link type="text/css" rel="Stylesheet" href="stylesheets/shThemeDefault.css" />
 
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -31,9 +37,9 @@
           <h3>
 <a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is SpectrumScan?</h3>
 
-<p>SpectrumScan is a spectrum analyzer with a 2GHz frequency range built on the beaglebone black using a USB DVB-T television reciever. The USB reciever is based on the RTL2832 demodulator chip which allows  direct access to the I/Q data using the rtl-sdr library. A Fast-Fourier-Transform(FFT) is performed on the sampled signals which converts the data to the frequency domain which are then plotted on the screen. </p>
+<p>SpectrumScan is a spectrum analyzer with a 2GHz frequency range built on the beaglebone black using a USB DVB-T television reciever. The USB reciever is based on the RTL2832 demodulator chip which allows  direct access to the I/Q data using the rtl-sdr library. A Fast-Fourier-Transform(FFT) is performed on the sampled signals which converts the data to the frequency domain which are then plotted on the screen.</p>
 
-<img src="images/sized-ss-diagram.jpg" alt="Block Diagram" draggable="false">
+<img src="images/ss-drawing2.png" alt="Block Diagram" draggable="false">
 
 <h3>
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h3>
@@ -53,14 +59,59 @@
 <p>add video and or pictures of spectrumscan</p>
 
 <h3>
-<a id="libraries-and-software" class="anchor" href="#libraries-and-software" aria-hidden="true"><span class="octicon octicon-link"></span></a>Libraries and Software</h3>
+<a id="libraries-and-software" class="anchor" href="#libraries-and-software" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hardware and Software</h3>
 
-<p>add info onw hat libs i used, and what software is necenssary to run spectrumscan(i.e. linux debian)</p>
+<p>Here is the complete list of hardware and software components.</p>
+
+<p>Hardware:</p>
+<ul>
+  <li><a href="http://beagleboard.org/BLACK">Beaglebone black</a> </li>
+  <li><a href="http://www.4dsystems.com.au/product/4DCAPE_70T/">7.0" LCD Cape</a></li>
+  <li>RTL2832U based DVB-T USB dongle with R820T tuner</li>
+  <li>8GB SD card minimum for building and installing dependencies</li>
+  <li>Power Supply- I highly recommended to power the beaglebone using an external power supply rather than the USB cable alone. </li>
+</ul> 
+
+<p>Software and Dependencies:</p>
+<ul>
+  <li>Debian linux image for beaglebone</li>
+  <li>libusb - for communicating with the USB dongle</a></li>
+  <li>librtlsdr - turns the DVB-T dongle into a software defnied radio reciever</li>
+  <li>libav - used for the FFT alogrithm</li>
+  <li>tslib - touchscreen library </li>
+  <li>Qt Embedded - for Qt components</li>
+  <li>SpectrumScan - main application</li>
+</ul> 
 
 <h3>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installion Instructions</h3>
 
 <p>add the linux commands and other instructuons to build spectrumscan on a beaglebone</p>
+
+<script type="text/plain" id="input">
+
+#
+# Create /etc/apt/sources.list.d/wheezy-backports.list with one line,
+# then install libavresample-dev from wheezy-backports.
+#
+sudo echo -e "deb http://ftp.debian.org/debian wheezy-backports main\n" >/etc/apt/sources.list.d/wheezy-backports.list
+
+
+</script>
+
+<script type="text/javascript">
+var brush = new SyntaxHighlighter.brushes.Bash(),
+  code = document.getElementById('input').innerHTML,
+  html
+  ;
+  
+brush.init({ toolbar: false });
+html = brush.getHtml(code);
+
+document.write(html);
+</script>
+
+
         </section>
 
         <aside id="sidebar">
@@ -79,6 +130,5 @@
       </div>
     </div>
 
-  
   </body>
 </html>
