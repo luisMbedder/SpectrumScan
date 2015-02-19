@@ -86,15 +86,189 @@
 <h3>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installion Instructions</h3>
 
-<p>add the linux commands and other instructuons to build spectrumscan on a beaglebone</p>
+<p>The procedure to build SpectrumScan on your own beaglebone is described in this section. I divided the build into
+three parts, structured around several necessary reboots.Note that this was built on a beaglebone running linux debian.  </p>
 
 <script type="text/plain" id="input">
 
+############
 #
-# Create /etc/apt/sources.list.d/wheezy-backports.list with one line,
+# Start of Part 1 
+#
+############
+#
+# I prefer to create a new user rather than use the default account.
+# We also need a group "input" for access to the touchscreen device.
+#
+sudo adduser spectrumscan
+sudo addgroup input
+sudo usermod -a -G admin spectrumscan
+sudo usermod -a -G adm spectrumscan
+sudo usermod -a -G input spectrumscan
+#
+# Assume that everything in this script is done logged into the spectrumscan 
+# account unless otherwise noted.
+#
+# Inorder to install Qt4 embedded you will need to boot linux from an sdcard,
+# not the on-board eMMC drive. This is so we can expand the root file 
+# partition to the entire size of the SD card. Otherwise we will be limited 
+# to the 4GB available on the eMMC which wont be enough space to build all the 
+# Qt stuff. You will need at least an 8GB SD card. Instructions on how to 
+# expand your partition are provided in the following link, 
+# http://elinux.#org/Beagleboard:Expanding_File_System_Partition_On_A_microSD
+#
+# continue to part 2 once you have expanded your partition. 
+#
+
+############
+#
+# End of Part 1
+#
+############
+
+
+############
+#
+# Start of Part 2
+#
+############
+#
+# The usual update for a new install...
+# Plus, we dont need Apache or lightdm. 
+#
+sudo apt-get update
+sudo apt-get purge lightdm apache2
+sudo apt-get autoremove
+sudo apt-get upgrade
+sudo apt-get dist-upgrade
+sudo shutdown -r now
+
+############
+#
+# End of Part 2
+#
+############
+
+
+############
+#
+# Start of Part 3
+#
+############
+#
+# Install the libraries on which SpectrumScan depends.
+#
+sudo apt-get install libavdevice-dev libavfilter-dev libusb-1.0-0-dev
+#
+# Create /etc/apt/sources.list.d/wheezy-backports.list with one line, 
 # then install libavresample-dev from wheezy-backports.
 #
-sudo echo -e "deb http://ftp.debian.org/debian wheezy-backports main\n" >/etc/apt/sources.list.d/wheezy-backports.list
+sudo echo -e "deb http://ftp.debian.org/debian wheezy-backports main\n" 
+>/etc/apt/sources.list.d/wheezy-backports.list
+sudo apt-get update
+sudo apt-get -t wheezy-backports install libavresample-dev
+#
+# Install tslib
+#
+cd ~spectrumscan
+git clone git://github.com/kergoth/tslib.git
+cd tslib
+./autogen.sh
+./configure
+make
+make install
+#
+# Set some environment variables and make them permanent by adding the 
+# following export statements to the /etc/profile file. 
+#
+nano /etc/profile
+export OE_QMAKE_CXX=/usr/bin/gcc
+export OE_QMAKE_CXX=/usr/bin/g++
+export OE_QMAKE_LINK=/usr/bin/gcc
+export OE_QMAKE_INCDIR_QT=/usr/include/qtopia
+export OE_QMAKE_MOC=/usr/bin/moc
+export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/qwt-6.1.0/lib:/usr/local/Trolltech/QtEmbedded-4.8.6/lib:$
+LD_LIBRARY_PATH}
+export TSLIB_TSDEVICE=/dev/input/event1
+export QWS_MOUSE_PROTO=tslib:/dev/input/event1
+export TSLIB_CALIBFILE = etc/pointercal
+#
+# We must build the latest Qt4-embedded from source as there is no package available for debian.
+# This part takes a *loong* time, like hours...Just let it run overnight.
+#
+cd ~spectrumscan
+wget http://download.qt-project.org/official_releases/qt/4.8/4.8.6/qt-everywhere-opensource-src-4.8.6.tar.gz
+gunzip qt-everywhere-opensource-src-4.8.6.tar.gz
+tar xf qt-everywhere-opensource-src-4.8.6.tar
+cd qt-everywhere-opensource-src-4.8.6
+./configure -embedded -opensource -fast -release -qt-mouse-tslib -no-webkit -nomake examples -nomake demos 
+-nomake docs -qt-kbd-tty -qt-kbd-linuxinput
+make
+sudo make install
+#
+# Install the QWT widget library.
+#
+cd ~viewrf
+wget http://jaist.dl.sourceforge.net/project/qwt/qwt/6.1.0/qwt-6.1.0.tar.bz2
+tar -xjvf qwt-6.1.0.tar.bz2
+cd qwt-6.1.0
+#
+# Edit qwtconfig.pri, remove QwtOpenGL, QwtDesigner
+# Edit ./src/src.pro, change TARGET to: TARGET = $$qwtLibraryTarget(qwt$$QT_LIBINFIX)
+# 
+export PATH=$PATH:/usr/local/Trolltech/QtEmbedded-4.8.6/bin:
+qmake 
+make
+sudo make install
+#
+# Install the RTL-SDR libraries.
+#
+cd ~viewrf
+git clone git://git.osmocom.org/rtl-sdr.git
+cd rtl-sdr
+autoreconf -i
+./configure --enable-driver-detach
+make
+sudo make install
+sudo make install-udev-rules
+#
+# Make sure the stock RTL driver does not load.
+#
+sudo echo -e "blacklist dvb_usb_rtl28xxu" >/etc/modprobe.d/50-rtlsdr.conf
+#
+# And we"'"ll need to allow ourselves access to the touchscreen device.
+#
+sudo echo -e "KERNEL==\"event*\", NAME=\"input/%k\", MODE=\"660\", GROUP=\"input\"" >/etc/udev/rules.d/99-input.rules
+#
+# Clone the SpectrumScan code and build it.
+#
+cd ~spectrumscan
+git clone git://github.com/luisMbedder/SpectrumScan.git
+#
+# Edit SpectrumScan.pro
+# "include" directive becomes include (/usr/local/qwt-6.1.0/features/qwt.prf)
+# "target.path" becomes target.path = /home/spectrumscan
+# Comment out both "INCLUDEPATH" lines.
+# Remove all the "-L" options on the "LIBS" line.
+# "CXXFLAGS" becomes QMAKE_CXXFLAGS += -Wno-psabi -D__STDC_CONSTANT_MACROS
+#
+cd spectrumscan
+qmake -o Makefile ViewRF.pro
+make
+#
+# and reboot..
+#
+sudo shutdown -r now
+#
+# after reboot, your ready to run SpectrumScan!!
+#
+SpectrumScan -qws
+#############
+#
+# End of Part 3
+#
+
+
 
 
 </script>
