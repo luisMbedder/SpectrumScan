@@ -37,7 +37,9 @@
           <h3>
 <a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is SpectrumScan?</h3>
 
-<p>SpectrumScan is a spectrum analyzer with a 2GHz frequency range built on the beaglebone black using a USB DVB-T television reciever. The USB reciever is based on the RTL2832 demodulator chip which allows  direct access to the I/Q data using the rtl-sdr library. A Fast-Fourier-Transform(FFT) is performed on the sampled signals which converts the data to the frequency domain which are then plotted on the screen.</p>
+<p>SpectrumScan is a spectrum analyzer with a 2GHz frequency range built on the beaglebone black that allows you capture and display the radio wave frequencies that we're surrounded by everyday. It works by using USB DVB-T television reciever based on the RTL2832 demodulator chip which allows direct access to the I/Q data using the rtl-sdr library. A Fast-Fourier-Transform(FFT) is performed on the sampled signals which converts the data to the frequency domain and is then plotted on the screen. </p>
+
+<p>In this page I show you how to build your very own SpectrumScan so you too can explore a wide range of fequencies including FM radio, television, emergency & weather radio, citizen band, and many more! </p>
 
 <img src="images/ss-drawing2.png" alt="Block Diagram" draggable="false">
 
@@ -49,32 +51,35 @@
   <li>Touchscreen 7.0" LCD display</li>
   <li>Browse the spectrum by scrolling horizontally</li>
   <li>User adjustable gain setting</li>
+  <li>2.4MHz Bandwidth</li>
   <li>Instantaneous spectrum plot</li>
   <li>Waterfall spectrum plot</li>
 </ul> 
 
 <h3>
 <a id="demo" class="anchor" href="#demo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Demo</h3>
-
+<video width="720" muted="true" loop="true" controls>
+  <source src="images/joescode.webm" type="video/webm">
+</video>
 <p>add video and or pictures of spectrumscan</p>
 
 <h3>
 <a id="libraries-and-software" class="anchor" href="#libraries-and-software" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hardware and Software</h3>
 
-<p>Here is the complete list of hardware and software components.</p>
+<p>Here is the complete list of hardware and software components. The entire project can be built for around $150.</p>
 
 <p>Hardware:</p>
 <ul>
   <li><a href="http://beagleboard.org/BLACK">Beaglebone black</a> </li>
-  <li><a href="http://www.4dsystems.com.au/product/4DCAPE_70T/">7.0" LCD Cape</a></li>
-  <li>RTL2832U based DVB-T USB dongle with R820T tuner</li>
+  <li><a href="http://www.4dsystems.com.au/product/4DCAPE_70T/">7.0" LCD Cape</a> - The software has been designed to run on an 800x480 resolution screen.</li>
+  <li>RTL2832U based DVB-T USB dongle with R820T tuner - I used one from <a href="http://www.nooelec.com/store/sdr/sdr-receivers/nesdr-mini-rtl2832-r820t.html">NooElec</a>. </li>
   <li>8GB SD card minimum for building and installing dependencies</li>
-  <li>Power Supply- I highly recommended to power the beaglebone using an external power supply rather than the USB cable alone. </li>
+  <li>Power Supply - I highly recommended to power the beaglebone using an external power supply rather than the USB cable alone. </li>
 </ul> 
 
 <p>Software and Dependencies:</p>
 <ul>
-  <li>Debian linux image for beaglebone</li>
+  <li>Debian linux for beaglebone-latest images can be found <a href="http://beagleboard.org/latest-images">here</a></li>
   <li>libusb - for communicating with the USB dongle</a></li>
   <li>librtlsdr - turns the DVB-T dongle into a software defnied radio reciever</li>
   <li>libav - used for the FFT alogrithm</li>
@@ -193,8 +198,9 @@ export TSLIB_TSDEVICE=/dev/input/event1
 export QWS_MOUSE_PROTO=tslib:/dev/input/event1
 export TSLIB_CALIBFILE = etc/pointercal
 #
-# We must build the latest Qt4-embedded from source as there is no package available for debian.
-# This part takes a *loong* time, like hours...Just let it run overnight.
+# We must build the latest Qt4-embedded from source as there is no package 
+# available for debian. This part takes a *loong* time, like hours...Just 
+# let it run overnight.
 #
 cd ~spectrumscan
 wget http://download.qt-project.org/official_releases/qt/4.8/4.8.6/qt-everywhere-opensource-src-4.8.6.tar.gz
@@ -208,7 +214,7 @@ sudo make install
 #
 # Install the QWT widget library.
 #
-cd ~viewrf
+cd ~spectrumscan
 wget http://jaist.dl.sourceforge.net/project/qwt/qwt/6.1.0/qwt-6.1.0.tar.bz2
 tar -xjvf qwt-6.1.0.tar.bz2
 cd qwt-6.1.0
@@ -223,7 +229,7 @@ sudo make install
 #
 # Install the RTL-SDR libraries.
 #
-cd ~viewrf
+cd ~spectrumscan
 git clone git://git.osmocom.org/rtl-sdr.git
 cd rtl-sdr
 autoreconf -i
@@ -253,7 +259,7 @@ git clone git://github.com/luisMbedder/SpectrumScan.git
 # "CXXFLAGS" becomes QMAKE_CXXFLAGS += -Wno-psabi -D__STDC_CONSTANT_MACROS
 #
 cd spectrumscan
-qmake -o Makefile ViewRF.pro
+qmake -o Makefile SpectrumScan.pro
 make
 #
 # and reboot..
@@ -263,10 +269,12 @@ sudo shutdown -r now
 # after reboot, your ready to run SpectrumScan!!
 #
 SpectrumScan -qws
+
 #############
 #
 # End of Part 3
 #
+#############
 
 
 
