@@ -16,7 +16,7 @@
 * Notes:
 *
 * SpectrumScan - RTL-SDR 2Ghz Spectrum Analyzer for the BeagleBone
-* Copyright (C) 2015 Luis Marquez <http://luismbedder.github.io>
+* Copyright (C) 2015 Luis Marquez <http://luismbedder.com>
 
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -43,20 +43,11 @@
 #include "gui.h"
 #include "waterfallplot.h"
 
-class I : public QThread
-{
-public:
-        static void sleep(unsigned long secs) {
-                QThread::sleep(secs);
-        }
-};
-
 class MyInitThread : public QThread
 {
 protected:
     void run(void)
     {
-        /* Do whatever needs to be done to init your application! */
 
         QThread::msleep(3500); //show splash for 3 seconds
     }
@@ -77,7 +68,6 @@ int main(int argc, char *argv[])
 
     QSplashScreen splash(pixmap);
     splash.setEnabled(false);//prevent user from closing splash
-        splash.showMessage("hi there");
     splash.show();
 
     prog.processEvents();//Make sure splash screen gets drawn ASAP
@@ -89,7 +79,7 @@ int main(int argc, char *argv[])
     QObject::connect(thread, SIGNAL(terminated()), &loop, SLOT(quit()));
     thread->start();
 
-    loop.exec(); //Do event processing until the thread has finished!
+    loop.exec(); //Do event processing until the thread has finished
     Gui gui;
     gui.setWindowState(Qt::WindowFullScreen);
     gui.show();
