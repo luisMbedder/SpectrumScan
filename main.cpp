@@ -58,7 +58,7 @@ protected:
     {
         /* Do whatever needs to be done to init your application! */
 
-        QThread::msleep(3000); //show splash for 3 seconds
+        QThread::msleep(3500); //show splash for 3 seconds
     }
 };
 
@@ -68,8 +68,8 @@ int main(int argc, char *argv[])
 {
     QApplication prog(argc, argv);
 
-    QPixmap pixmap(":/images/ss-splash-screen.png"); // Insert splash image
-  //  QPixmap pixmap(":/images/ss-splash-v2.png"); // Insert splash image
+  //  QPixmap pixmap(":/images/ss-splash-screen.png"); // Insert splash image
+    QPixmap pixmap(":/images/ss-splash-v4.png"); // Insert splash image
     if(pixmap.isNull())
     {
         QMessageBox::warning(0, "Error", "Failed to load Splash Screen image!");
@@ -77,7 +77,9 @@ int main(int argc, char *argv[])
 
     QSplashScreen splash(pixmap);
     splash.setEnabled(false);//prevent user from closing splash
+        splash.showMessage("hi there");
     splash.show();
+
     prog.processEvents();//Make sure splash screen gets drawn ASAP
 
     QEventLoop loop;

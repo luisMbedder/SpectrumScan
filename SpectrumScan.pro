@@ -44,8 +44,6 @@ LIBS += -L/home/luis/qt-bbb/libusb/lib -lusb-1.0  -L/home/luis/qt-bbb/librtlsdr-
 INCLUDEPATH += /usr/include
 //INCLUDEPATH += /opt/libav/include
 INCLUDEPATH += /usr/include/i386-linux-gnu
-OTHER_FILES += \
-    images/ss-splash-v2.png
 QMAKE_CXXFLAGS += -Wno-psabi -D__STDC_CONSTANT_MACROS
 
 RESOURCES += \

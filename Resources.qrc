@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/images">
-        <file>ss-splash-v2.png</file>
         <file>ss-splash-screen.png</file>
+        <file>ss-splash-v4.png</file>
     </qresource>
 </RCC>
