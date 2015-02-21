@@ -34,15 +34,66 @@
 
 #include <QApplication>
 #include <QWSServer>
+#include <QThread>
+#include <QTimer>
+#include <QSplashScreen>
+#include <QPixmap>
+#include <QMessageBox>
+#include <QThread>
 #include "gui.h"
 #include "waterfallplot.h"
+
+class I : public QThread
+{
+public:
+        static void sleep(unsigned long secs) {
+                QThread::sleep(secs);
+        }
+};
+
+class MyInitThread : public QThread
+{
+protected:
+    void run(void)
+    {
+        /* Do whatever needs to be done to init your application! */
+
+        QThread::msleep(3000); //show splash for 3 seconds
+    }
+};
+
+
 
 int main(int argc, char *argv[])
 {
     QApplication prog(argc, argv);
+
+    QPixmap pixmap(":/images/ss-splash-screen.png"); // Insert splash image
+  //  QPixmap pixmap(":/images/ss-splash-v2.png"); // Insert splash image
+    if(pixmap.isNull())
+    {
+        QMessageBox::warning(0, "Error", "Failed to load Splash Screen image!");
+    }
+
+    QSplashScreen splash(pixmap);
+    splash.setEnabled(false);//prevent user from closing splash
+    splash.show();
+    prog.processEvents();//Make sure splash screen gets drawn ASAP
+
+    QEventLoop loop;
+
+    MyInitThread *thread = new MyInitThread();
+    QObject::connect(thread, SIGNAL(finished()), &loop, SLOT(quit()));
+    QObject::connect(thread, SIGNAL(terminated()), &loop, SLOT(quit()));
+    thread->start();
+
+    loop.exec(); //Do event processing until the thread has finished!
     Gui gui;
     gui.setWindowState(Qt::WindowFullScreen);
     gui.show();
+    prog.processEvents();
+    splash.hide();
 
     return prog.exec();
+
 }
