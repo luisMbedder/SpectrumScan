@@ -326,6 +326,12 @@ void Waterfallplot::setAlpha( int alpha )
         d_waterfall->setAlpha( alpha );
         replot();
     }
+
+
+}
+
+void Waterfallplot::printPlot( ){
+
 }
 
 
