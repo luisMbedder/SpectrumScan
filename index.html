@@ -37,7 +37,7 @@
           <h3>
 <a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is SpectrumScan?</h3>
 
-<p>SpectrumScan is a spectrum analyzer with a 2GHz frequency range built on the beaglebone black that allows you capture and display the radio wave frequencies that we're surrounded by everyday. It works by using USB DVB-T television reciever based on the RTL2832 demodulator chip which allows direct access to the I/Q data using the rtl-sdr library. A Fast-Fourier-Transform(FFT) is performed on the sampled signals which converts the data to the frequency domain and is then plotted on the screen. </p>
+<p>SpectrumScan is a spectrum analyzer with a 2GHz frequency range built on the beaglebone black that allows you capture and display the radio wave frequencies that we're surrounded by everyday. It works by using a USB DVB-T television reciever based on the RTL2832 demodulator chip which allows direct access to the I/Q data using the rtl-sdr library. A Fast-Fourier-Transform(FFT) is performed on the sampled signals which converts the data to the frequency domain and are then plotted on the screen. </p>
 
 <p>In this page I show you how to build your very own SpectrumScan so you too can explore a wide range of fequencies including FM radio, television, emergency & weather radio, citizen band, and many more! </p>
 
@@ -50,7 +50,7 @@
  <ul>
   <li>Touchscreen 7.0" LCD display</li>
   <li>Browse the spectrum by scrolling horizontally</li>
-  <li>User adjustable gain setting</li>
+  <li>Adjust the gain settings of the DVB-T dongle</li>
   <li>2.4MHz Bandwidth</li>
   <li>Instantaneous spectrum plot</li>
   <li>Waterfall spectrum plot</li>
@@ -66,7 +66,7 @@
 <h3>
 <a id="libraries-and-software" class="anchor" href="#libraries-and-software" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hardware and Software</h3>
 
-<p>Here is the complete list of hardware and software components. The entire project can be built for around $150.</p>
+<p>Here is the complete list of hardware and software components I used. The entire project can be built for around $150.</p>
 
 <p>Hardware:</p>
 <ul>
@@ -92,7 +92,7 @@
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installion Instructions</h3>
 
 <p>The procedure to build SpectrumScan on your own beaglebone is described in this section. I divided the build into
-three parts, structured around several necessary reboots.Note that this was built on a beaglebone running linux debian.  </p>
+three parts, structured around several necessary reboots.Note that this was built on a beaglebone running debian linux.  </p>
 
 <script type="text/plain" id="input">
 
@@ -111,16 +111,14 @@ sudo usermod -a -G admin spectrumscan
 sudo usermod -a -G adm spectrumscan
 sudo usermod -a -G input spectrumscan
 #
-# Assume that everything in this script is done logged into the spectrumscan 
-# account unless otherwise noted.
 #
-# Inorder to install Qt4 embedded you will need to boot linux from an sdcard,
+# Inorder to install Qt4 embedded you will need to boot linux from an SD card,
 # not the on-board eMMC drive. This is so we can expand the root file 
 # partition to the entire size of the SD card. Otherwise we will be limited 
 # to the 4GB available on the eMMC which wont be enough space to build all the 
 # Qt stuff. You will need at least an 8GB SD card. Instructions on how to 
 # expand your partition are provided in the following link, 
-# http://elinux.#org/Beagleboard:Expanding_File_System_Partition_On_A_microSD
+# http://elinux.org/Beagleboard:Expanding_File_System_Partition_On_A_microSD
 #
 # continue to part 2 once you have expanded your partition. 
 #
@@ -183,23 +181,35 @@ cd tslib
 make
 make install
 #
+#Now lets calibrate the touchscreen pointer
+#
+cd ~root
+cd ..
+cd usr/local/etc
+#
+# edit the ts.conf file by uncommenting the #module_raw_input line
+#
+cd usr/local/bin
+ts_calibrate
+#
+#You can test the calibration by running the ts_test utility
+#
 # Set some environment variables and make them permanent by adding the 
 # following export statements to the /etc/profile file. 
 #
-nano /etc/profile
+export PATH=$PATH:/usr/local/Trolltech/QtEmbedded-4.8.6/bin
 export OE_QMAKE_CXX=/usr/bin/gcc
 export OE_QMAKE_CXX=/usr/bin/g++
 export OE_QMAKE_LINK=/usr/bin/gcc
 export OE_QMAKE_INCDIR_QT=/usr/include/qtopia
 export OE_QMAKE_MOC=/usr/bin/moc
-export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/qwt-6.1.0/lib:/usr/local/Trolltech/QtEmbedded-4.8.6/lib:$
-LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/qwt-6.1.0/lib:/usr/local/Trolltech/QtEmbedded-4.8.6/lib:$LD_LIBRARY_PATH}
 export TSLIB_TSDEVICE=/dev/input/event1
 export QWS_MOUSE_PROTO=tslib:/dev/input/event1
-export TSLIB_CALIBFILE = etc/pointercal
+export TSLIB_CALIBFILE=/usr/local/etc/pointercal
 #
 # We must build the latest Qt4-embedded from source as there is no package 
-# available for debian. This part takes a *loong* time, like hours...Just 
+# available for debian. make takes a *loong* time, like hours...Just 
 # let it run overnight.
 #
 cd ~spectrumscan
@@ -208,7 +218,7 @@ gunzip qt-everywhere-opensource-src-4.8.6.tar.gz
 tar xf qt-everywhere-opensource-src-4.8.6.tar
 cd qt-everywhere-opensource-src-4.8.6
 ./configure -embedded -opensource -fast -release -qt-mouse-tslib -no-webkit -nomake examples -nomake demos 
--nomake docs -qt-kbd-tty -qt-kbd-linuxinput
+-nomake docs 
 make
 sudo make install
 #
@@ -219,10 +229,9 @@ wget http://jaist.dl.sourceforge.net/project/qwt/qwt/6.1.0/qwt-6.1.0.tar.bz2
 tar -xjvf qwt-6.1.0.tar.bz2
 cd qwt-6.1.0
 #
-# Edit qwtconfig.pri, remove QwtOpenGL, QwtDesigner
+# Edit qwtconfig.pri, remove/comment QwtOpenGL, QwtDesigner
 # Edit ./src/src.pro, change TARGET to: TARGET = $$qwtLibraryTarget(qwt$$QT_LIBINFIX)
 # 
-export PATH=$PATH:/usr/local/Trolltech/QtEmbedded-4.8.6/bin:
 qmake 
 make
 sudo make install
@@ -242,7 +251,7 @@ sudo make install-udev-rules
 #
 sudo echo -e "blacklist dvb_usb_rtl28xxu" >/etc/modprobe.d/50-rtlsdr.conf
 #
-# And we"'"ll need to allow ourselves access to the touchscreen device.
+# And we'll need to allow ourselves access to the touchscreen device.
 #
 sudo echo -e "KERNEL==\"event*\", NAME=\"input/%k\", MODE=\"660\", GROUP=\"input\"" >/etc/udev/rules.d/99-input.rules
 #
@@ -250,15 +259,14 @@ sudo echo -e "KERNEL==\"event*\", NAME=\"input/%k\", MODE=\"660\", GROUP=\"input
 #
 cd ~spectrumscan
 git clone git://github.com/luisMbedder/SpectrumScan.git
+cd SpectrumScan
 #
 # Edit SpectrumScan.pro
 # "include" directive becomes include (/usr/local/qwt-6.1.0/features/qwt.prf)
 # "target.path" becomes target.path = /home/spectrumscan
-# Comment out both "INCLUDEPATH" lines.
-# Remove all the "-L" options on the "LIBS" line.
-# "CXXFLAGS" becomes QMAKE_CXXFLAGS += -Wno-psabi -D__STDC_CONSTANT_MACROS
+# Comment out all three "INCLUDEPATH" lines.
+# Uncomment the first "LIBS" line, and comment out the second.
 #
-cd spectrumscan
 qmake -o Makefile SpectrumScan.pro
 make
 #
@@ -268,7 +276,9 @@ sudo shutdown -r now
 #
 # after reboot, your ready to run SpectrumScan!!
 #
-SpectrumScan -qws
+cd ~spectrumscan
+cd SpectrumScan
+./SpectrumScan -qws
 
 #############
 #
