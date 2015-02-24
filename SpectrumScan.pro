@@ -40,6 +40,7 @@ FORMS    += \
 
 INCLUDEPATH += /home/luis/qt-arm/rtl-sdr/include
 INCLUDEPATH += /usr/include
+INCLUDEPATH += /usr/include/i386-linux-gnu
 #LIBS += -lusb-1.0  -lrtlsdr -lavdevice -lavfilter -lavformat -lavresample -lavcodec -lswscale -lavutil
 LIBS += -L/home/luis/qt-bbb/libusb/lib -lusb-1.0  -L/home/luis/qt-bbb/librtlsdr-arm -lrtlsdr -L/usr/local/lib -lavdevice -lavfilter -lavformat -lavresample -lavcodec -lswscale -lavutil
 

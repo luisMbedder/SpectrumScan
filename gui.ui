@@ -86,7 +86,7 @@ border: 2px solid gray;
      padding: 0 5px;
      background-color: rgb(135, 134, 150);
  border-radius: 1px;
-color: white;
+color: black;
  }</string>
     </property>
     <property name="title">
@@ -305,7 +305,7 @@ color: white;
      padding: 0 5px;
      background-color: rgb(135, 134, 150);
      border-radius: 1px;
-     color: white;
+     color: black;
  }</string>
     </property>
     <property name="title">

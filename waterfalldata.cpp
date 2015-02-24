@@ -89,7 +89,7 @@ void WaterfallData::addFFTData(double *fftData){
 
 double WaterfallData::value(double x, double y) const
 {
-  double returnValue = -90.0;
+  double returnValue = MIN_INTENSITY;
 
   double height = interval(Qt::YAxis).maxValue();
   double left = interval(Qt::XAxis).minValue();
