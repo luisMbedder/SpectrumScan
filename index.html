@@ -58,10 +58,18 @@
 
 <h3>
 <a id="demo" class="anchor" href="#demo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Demo</h3>
+<p>The user interface is shown below displaying the intensity of the radio signals measured in decibels across a range of frequencies. The "frequency" tab allows you to scroll the spectrum in .1Mhz to 100Mhz steps. The "gain" slider allows you adjust the internal gain setting of the reciever. Increasing the gain allows you to remove noise and amplify a weak signal to make it more visible. 
+The "mode" key toggles between instantaneous and waterfall plots and the "exit" key closes the program. </p>
+<img src="images/instant_plot.png" alt="Instantaneous Plot" draggable="false">
+
+<p>The waterfall plot displays the intensity of the frequencies over time. Each row of pixels represents a point in time, and each individual pixel is colored according to the intensity of the signal at that frequency. Every new measurement is added to the bottom of the plot, so the graph scrolls upward with the newest measurements at the botton and oldest at the top.</p>
+<img src="images/waterfall.png" alt="Waterfall Plot" draggable="false">
+
+In this video, I show you the spectrum of various signals. 
 <video width="720" muted="true" loop="true" controls>
-  <source src="images/joescode.webm" type="video/webm">
+  <source src="images/ss-demo.webm" type="video/webm">
 </video>
-<p>add video and or pictures of spectrumscan</p>
+
 
 <h3>
 <a id="libraries-and-software" class="anchor" href="#libraries-and-software" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hardware and Software</h3>
@@ -81,7 +89,7 @@
 <ul>
   <li>Debian linux for beaglebone-latest images can be found <a href="http://beagleboard.org/latest-images">here</a></li>
   <li>libusb - for communicating with the USB dongle</a></li>
-  <li>librtlsdr - turns the DVB-T dongle into a software defnied radio reciever</li>
+  <li>librtlsdr - turns the DVB-T dongle into a software defined radio reciever</li>
   <li>libav - used for the FFT alogrithm</li>
   <li>tslib - touchscreen library </li>
   <li>Qt Embedded - for Qt components</li>
